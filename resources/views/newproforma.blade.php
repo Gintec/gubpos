@@ -54,26 +54,27 @@
     @if(Session::get('tid'))
         @php
             $tid = Session::get('tid');
+            $category = strtolower(Session::get('category'));
         @endphp
         <div class="row">
             <div class="col-md-3 col-md-offset-2">
-                <a href="{{url('new-invoice/invoice/'.$tid)}}" class="btn btn-success" target="_blank">Print Invoice</a>
+                <a href="{{url('new-invoice/'.$category.'/'.$tid)}}" class="btn btn-success" target="_blank">Print {{ucwords($category)}}</a>
             </div>
             <div class="col-md-3 col-md-offset-2">
-                <a href="{{url('new-invoice/receipt/'.$tid)}}" class="btn btn-primary" target="_blank">Print Receipt</a>
+                <a href="{{url('send-document/'.$category.'/'.$tid)}}" class="btn btn-primary" target="_blank">Send {{$category}}</a>
             </div>
         </div>
         <hr>
     @endif
 
-    <h3 class="page-title">New Sales | <small style="color: green">Click to Select Items</small></h3>
+    <h3 class="page-title">Create Proforma Invoice/Quotation | <small style="color: green">Click to Select Items</small></h3>
     <div class="row">
             <div class="panel">
 
                 <div class="panel-body">
 
                     <div class="col-md-7" style="float: right;">
-                        <form action="{{ route('addsales') }}" method="post" id="selecteditems">
+                        <form action="{{ route('addproforma') }}" method="post" id="selecteditems">
                             @csrf
                             <table class="table" id="itemlist">
                                 <thead>
@@ -112,7 +113,7 @@
                                         <td colspan="2"><input type="text" class="form-control" name="details" placeholder="details e.g. on credit"></td>
                                         <td><input type="text" class="form-control datepicker" value="{{date('Y-m-d')}}" name="dated_sold" placeholder="Date Sold"></td>
                                         <td colspan="2">
-                                            <input type="text" name="group_id" id="group_id" placeholder="Invoice Number" class="form-control" required>
+                                            <input type="text" name="group_id" id="group_id" placeholder="Invoice Number" class="form-control">
 
                                         </td>
                                     </tr>
@@ -132,18 +133,14 @@
 
                                 <div class="form-group col-md-4" style="margin-top: 20px;">
                                         <select class="form-control" name="pay_method" id="pay_method">
-                                            <option value="Payment Method" selected>Payment Method</option>
-                                            <option value="Cash">Cash</option>
-                                            <option value="POS">POS</option>
-                                            <option value="Transfer">Transfer</option>
-                                            <option value="Cheque">Cheque</option>
-                                            <option value="Not Paid">Not Paid</option>
+                                            <option value="Proforma">Proforma</option>
+                                            <option value="Quotation">Quotation</option>
                                         </select>
                                 </div>
 
                                 <div class="form-group col-md-6" style="float: right !important; margin-top: 20px;">
                                     <button type="submit" class="btn btn-primary">
-                                        {{ __('Checkout') }}
+                                        {{ __('Create Proforma') }}
                                     </button>
                                 </div>
                             </div>

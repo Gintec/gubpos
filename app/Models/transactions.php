@@ -20,4 +20,9 @@ class transactions extends Model
     {
         return $this->hasOne(accountheads::class, 'id', 'account_head');
     }
+
+    public function customer()
+    {
+        return $this->hasOne(User::class, 'id', 'from');
+    }
 }

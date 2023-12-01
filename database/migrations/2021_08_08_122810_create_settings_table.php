@@ -18,7 +18,7 @@ class CreateSettingsTable extends Migration
             $table->string('business_name',70)->nullable();
             $table->string('motto',70)->nullable();
             $table->string('logo',70)->nullable();
-            $table->string('address',100)->nullable();
+            $table->string('address',200)->nullable();
             $table->string('background',70)->nullable();
             $table->string('mode',30)->nullable();
             $table->string('color',30)->nullable();

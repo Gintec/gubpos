@@ -16,7 +16,9 @@ class CreateProductSalesTable extends Migration
         Schema::create('product_sales', function (Blueprint $table) {
             $table->id();
 
-            $table->string('group_id',30)->index()->nullable();
+            $table->unsignedBigInteger('group_id',30)->index()->nullable();
+            $table->foreign('group_id')->references('reference_no')->on('transactions')->onDelete('cascade');
+
 
             $table->unsignedBigInteger('product_id')->index()->nullable();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');

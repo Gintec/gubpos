@@ -45,7 +45,6 @@
 			justify-content: center !important;
 			align-items: center !important;
 
-
 		}
 
 		.logo{
@@ -55,6 +54,7 @@
 			box-shadow: 2px 2px #ccc;
 			margin-bottom: -20px;
 			z-index: 99999999999999999999999;
+            background-color: white;
 		}
 ​
 

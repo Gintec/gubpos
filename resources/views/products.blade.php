@@ -99,11 +99,9 @@
                     <div class="form-group col-md-4">
                         <label for="type">Type</label>
                         <select class="form-control" name="type" id="type">
-                          <option value="Consumable">Consumable</option>
-                          <option value="Cleaning">Cleaning</option>
-                          <option value="Machine Part">Machine Part</option>
-                          <option value="Solid">Solid</option>
-                          <option value="Liquid">Liquid</option>
+                         <option value="Safes">Safes</option>
+                         <option value="Cabinets">Cabinets</option>
+                         <option value="Burglary Safes">Burglary Safes</option>
                         </select>
                     </div>
 

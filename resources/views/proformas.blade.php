@@ -3,7 +3,7 @@
 @section('content')
     @php $pagetype="report"; $modal="accounthead"; @endphp
 
-    <h3 class="page-title">Financial | <small style="color: green">Transactions</small></h3>
+    <h3 class="page-title">Proforma/Quotations | <small style="color: green"></small></h3>
     <div class="row">
             <div class="panel" style="width:100%">
                 <div class="panel-heading" style="text-align: center">
@@ -18,14 +18,9 @@
                             <tr>
                                 <th>Title</th>
                                 <th>Amount</th>
-                                <th>Account Head</th>
                                 <th>Date</th>
                                 <th>Ref. No</th>
                                 <th>Detail</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>Approved By</th>
-                                <th>Entered By</th>
                                 <th>Action</th>
 
                             </tr>
@@ -36,23 +31,13 @@
                                 <tr>
                                     <td>{{$transact->title}}</td>
                                     <td>{{number_format($transact->amount,2)}}</td>
-                                    <td>{{$transact->accounthead->title}}</td>
                                     <td>{{$transact->dated}}</td>
                                     <td>{{strtoupper($transact->reference_no)}}</td>
                                     <td>{{$transact->detail}}</td>
-                                    <td>{{is_numeric($transact->from)?$users->where('id',$transact->from)->first()->name:$transact->from}}</td>
-                                    <td>{{is_numeric($transact->to)?$users->where('id',$transact->to)->first()->name:$transact->to}}</td>
-                                    <td>{{is_numeric($transact->approved_by)?$users->where('id',$transact->approved_by)->first()->name:$transact->approved_by}}</td>
-                                    <td>{{is_numeric($transact->recorded_by)?$users->where('id',$transact->recorded_by)->first()->name:$transact->recorded_by}}</td>
                                     <td>
-
-                                        <button class="label label-primary" id="ach{{$transact->id}}" onclick="transaction({{$transact->id}})"  data-toggle="modal" data-target="#transaction" data-title="{{$transact->title}}" data-amount="{{$transact->amount}}" data-account_head="{{$transact->account_head}}" data-date="{{$transact->date}}" data-reference_no="{{$transact->reference_no}}" data-detail="{{$transact->detail}}" data-from="{{$transact->from}}" data-to="{{$transact->to}}" data-approved_by="{{$transact->approved_by}}"  data-recorded_by="{{$transact->recorded_by}}">Edit</button>
-                                        @if ($transact->account_head==1)
-                                            <a href="{{url('/invoice/invoice/'.$transact->id)}}" target="_blank" class="label label-success">Invoice</a>
-                                            <a href="{{url('/invoice/receipt/'.$transact->id)}}" target="_blank" class="label label-warning">Reciept</a>
-                                        @endif
-
-                                        <a href="{{url('/delete-trans/'.$transact->id)}}" class="label label-danger Super"  onclick="return confirm('Are you sure you want to delete {{$transact->detail}}\'s Financial Record?')">Delete</a>
+                                        <a href="{{url('/convert-invoice/'.$transact->id)}}" target="_blank" class="label label-success">Print</a>
+                                        <a href="{{url('/edit-invoice/'.$transact->id)}}" target="_blank" class="label label-warning">Edit/Convert</a>
+                                        <a href="{{url('/delete-trans/'.$transact->id)}}" class="label label-danger Super"  onclick="return confirm('Are you sure you want to delete {{$transact->detail}}\'s Record?')">Delete</a>
                                     </td>
 
                                 </tr>

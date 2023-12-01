@@ -20,7 +20,6 @@
                                 <li class="list-group-item active">Basic Info</b></li>
                                 <li class="list-group-item">Gender: <b>{{$member->gender}}</b></li>
                                 <li class="list-group-item">Date of Birth: <b>{{$member->dob}}</b></li>
-                                <li class="list-group-item">Age Group: <b>{{$member->age_group}}</b></li>
                             </ul>
                         </div>
                         <div class="col-md-5">
@@ -46,7 +45,7 @@
                                 @endphp
                                 <li class="list-group-item">Invited By: <b>{{$invited_by}} (<a href="tel:{{$phone_number}}">{{$phone_number}}</a>)</b></li>
                                 <li class="list-group-item">Assigned To: <b>{{$assigned_to}} (<a href="tel:{{$phone_number2}}">{{$phone_number2}}</a>)</b></li>
-                                <li class="list-group-item">Ministry: <b>{{$member->ministry}}</b></li>
+                                <li class="list-group-item">Category: <b>{{$member->ministry}}</b></li>
                             </ul>
                         </div>
 
@@ -58,7 +57,6 @@
                             <li class="list-group-item">Phone Number: <b><a href="tel:{{$member->phone_number}}">{{$member->phone_number}}</a></b></li>
                             <li class="list-group-item">E-mail: <b>{{$member->email}}</b></li>
                             <li class="list-group-item">Address: <b>{{$member->address}} \ Location: {{$member->location}}</b></li>
-                            <li class="list-group-item">House Fellowship: <b>{{$member->house_fellowship}}</b></li>
                         </ul>
                     </div>
 
@@ -194,14 +192,13 @@
                         <select class="form-control" name="type" id="type">
                             <option value="Call" selected>Call</option>
                             <option value="Visitation" selected>Visitation</option>
-                            <option value="Outreach" selected>Outreach</option>
                             <option value="Invitation" selected>Invitation</option>
                             <option value="Others" selected>Others</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="discussion"  class="control-label">Discussion with Member</label>
+                        <label for="discussion"  class="control-label">Discussion with Customer</label>
                         <textarea name="discussion" id="discussion" class="form-control" placeholder="discussion" rows="4"></textarea>
                     </div>
 

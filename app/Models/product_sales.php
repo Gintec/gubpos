@@ -43,6 +43,11 @@ class product_sales extends Model
         return $this->hasOne(User::class, 'id', 'confirmed_by');
     }
 
+    public function transaction()
+    {
+        return $this->hasOne(transactions::class, 'reference_no', 'group_id');
+    }
+
 
 
 }

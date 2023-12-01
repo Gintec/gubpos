@@ -6,15 +6,13 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Models\User;
 use App\Models\businessgroups;
-use App\Models\attendance;
 use App\Models\tasks;
-use App\Models\followups;
 use App\Models\programmes;
 use App\Models\settings;
 use App\Models\admintable;
 use App\Models\product;
-use App\Models\production_jobs;
 use App\Models\transactions;
+use App\Models\followups;
 use Artisan;
 // use Illuminate\Support\Facades\DB;
 
@@ -54,39 +52,14 @@ class HomeController extends Controller
             $setting_id = Auth()->user()->setting_id;
         }
 
-        if(($role=="Admin") || ($role == "Super")){
+        $jobs = transactions::select('id','account_head','dated','reference_no','payment_status','from')->get();
 
-            return $this->productionDashboard($setting_id,$role);
-        }else{
-            return $this->userDashboard();
-        }
+        return view('home')->with(['jobs'=>$jobs]);
+           // return $this->userDashboard();
+
      }
 
-    public function productionDashboard($setting_id,$role)
-    {
 
-        if($role == "Admin" || $role=="Super"){
-
-            $productionData = production_jobs::select(\DB::raw("COUNT(*) as count"))
-                    ->whereYear('dated_started', date('Y'))
-                    ->groupBy(\DB::raw("product_id"))
-                    ->pluck('count');
-
-            $jobs = production_jobs::select('product_id','staff_incharge','dated_started','dated_ended','status','estimated_cost_of_production')->get();
-            return view('production_dashboard', compact('jobs','productionData'));
-        }else{
-
-            $salesData = User::select(\DB::raw("COUNT(*) as count"))
-                    ->whereYear('dated_sold', date('Y'))
-                    ->groupBy(\DB::raw("Month(dated_sold)"))
-                    ->pluck('count');
-
-            $sales = products::select('product_name')->get();
-
-            return view('staff_dashboard',compact('sales','salesData'));
-
-        }
-    }
 
     public function userDashboard(){
         $myinvoices = transactions::where('from',Auth::user()->id)->get();
@@ -351,20 +324,31 @@ class HomeController extends Controller
           $background = $request->oldbackground;
       }
 
+        try{
 
-      settings::updateOrCreate(['id'=>$request->id],[
-          'business_name' => $request->business_name,
-          'motto' => $request->motto,
-          'logo' => $logo,
-          'address' => $request->address,
-          'background' => $background,
-          'mode'=>$request->mode,
-          'color'=>$request->color,
-          'businessgroup_id'=>$request->businessgroup_id,
-          'user_id'=>$request->user_id
-      ]);
-      $message = "The settings has been updated!";
-      return redirect()->back()->with(['message'=>$message]);
+            settings::updateOrCreate(['id'=>$request->id],[
+                'business_name' => $request->business_name,
+                'motto' => $request->motto,
+                'logo' => $logo,
+                'address' => $request->address,
+                'background' => $background,
+                'mode'=>$request->mode,
+                'color'=>$request->color,
+                'businessgroup_id'=>$request->businessgroup_id,
+                'user_id'=>$request->user_id
+            ]);
+            $message = "The settings has been updated!";
+            return redirect()->back()->with(['message'=>$message]);
+
+        } catch(\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            // if($errorCode == '1062'){
+            //    return back()->with('error', 'Your message may be a duplicate. Did you refresh the page? We blocked that submission. If you feel this was in error, e-mail us or call us.');
+            // }
+            // else{
+            return back()->with(['message'=>$e->getMessage(),'type'=>'Error']);
+            //}
+        }
     }
 
     public function switchbusiness(request $request){

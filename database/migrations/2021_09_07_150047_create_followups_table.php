@@ -16,7 +16,8 @@ class CreateFollowupsTable extends Migration
         Schema::create('followups', function (Blueprint $table) {
             $table->id();
             $table->string('title',70);
-            $table->string('member')->nullable();
+            $table->unsignedBigInteger('member')->index()->nullable();
+            $table->foreign('member')->references('id')->on('users')->nullable();
             $table->date('date')->nullable();
             $table->string('type',30)->nullable();
             $table->text('discussion')->nullable();

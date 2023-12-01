@@ -1,19 +1,18 @@
 @extends('layouts.theme')
 
 @section('content')
-    @php $modal="material"; $pagename = "materials"; @endphp
+    @php $modal="material"; $pagename = "Sales Report"; $pagetype="report"; @endphp
 
-    <h3 class="page-title">Product Sales | <small style="color: green">List</small></h3>
+    <h3 class="page-title">Sales Record | <small style="color: green">List</small></h3>
     <div class="row">
             <div class="panel">
                 <div class="panel-heading">
-
-                        <a href="{{url('/newsales')}}" class="btn btn-success pull-right"><i class="lnr lnr-cart"></i> New Sales</a>
-
-
+                        <div style="text-align: center;">
+                            <a href="{{url('/newsales')}}" class="btn btn-success"><i class="lnr lnr-cart"></i> Add New Sales</a>
+                        </div>
                 </div>
                 <div class="panel-body">
-                    <table class="table responsive-table">
+                    <table class="table responsive-table" id="products" style="width: 100%;">
                         <thead>
                             <tr style="color: ">
                                 <th>Invoice No</th>
@@ -37,8 +36,8 @@
                                     <td>{{$sale->group_id}}</td>
                                     <td>{{$sale->product->name}}</td>
                                     <td><b>{{$sale->quantity}}</b></td>
-                                    <td><b>{{$sale->price}}</b></td>
-                                    <td>{{$sale->amount_paid}}</td>
+                                    <td><b>{{number_format($sale->price,2)}}</b></td>
+                                    <td>{{number_format($sale->amount_paid,2)}}</td>
                                     <td>{{$sale->customer->name}}</td>
                                     <td>{{$sale->seller->name}}</td>
                                     <td>{{$sale->confirmedby->name}}</td>

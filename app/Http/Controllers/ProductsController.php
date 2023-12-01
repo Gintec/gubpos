@@ -169,7 +169,7 @@ class ProductsController extends Controller
      * @param  \App\Models\products  $products
      * @return \Illuminate\Http\Response
      */
-    public function destroy(products $products)
+    public function destroy($id)
     {
         products::findOrFail($id)->delete();
         $message = 'The product has been deleted!';

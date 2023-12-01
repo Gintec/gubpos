@@ -15,6 +15,32 @@
                         <div class="col-lg-3 col-sm-6">
                             <div class="card-box bg-blue">
                                 <div class="inner">
+                                    <h3>{{$jobs->where('account_head',1)->count()}}</h3>
+                                    <p>Sales</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-portfolio" aria-hidden="true"></i>
+                                </div>
+                                <a href="{{url('transactions')}}" class="card-box-footer">View All<i class="fa fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card-box bg-orange">
+                                <div class="inner">
+                                    <h3> {{$jobs->where('account_head','!=',1)->count()}} </h3>
+                                    <p>Proforma Invoices</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="fa fa-list" aria-hidden="true"></i>
+                                </div>
+                                <a href="{{url('proformas')}}" class="card-box-footer">View All <i class="fa fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="card-box bg-green">
+                                <div class="inner">
                                     <h3> {{$customers->count()}} </h3>
                                     <p> Total Customers</p>
                                 </div>
@@ -76,7 +102,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($tasks as $ta)
+                            @foreach ($mytasks as $ta)
                                 @if ($ta->category=="Reminder")
 
                                     <tr>

@@ -82,7 +82,7 @@
 			</div>
 			<div class="container-fluid">
 				<div class="navbar-btn">
-					<button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-arrow-left-circle"></i></button>
+					<button type="button" class="btn-toggle-fullwidth"><i class="lnr lnr-menu"></i></button>
 				</div>
                 @if(Auth()->user()->role!="Customer")
                     <form class="navbar-form navbar-left" action="{{ route('searchmembers') }}" method="post">
@@ -135,8 +135,8 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="lnr lnr-sync"></i> <span>Switch Dashboard</span> <i class="icon-submenu lnr lnr-chevron-down"></i></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{{ url('/productionjobs')}}"><i class="lnr lnr-store"></i> <span>Production</span></a></li>
                                     <li><a href="{{ url('/sales')}}"><i class="lnr lnr-cart"></i> <span>Sales</span></a></li>
+                                    <li><a href="{{ url('/services')}}"><i class="lnr lnr-cog"></i> <span>Services</span></a></li>
                                 </ul>
                             </li>
                         @endif
@@ -154,77 +154,70 @@
                         <ul class="nav">
                             <li><a href="{{ url('/home')}}" class="active"><i class="lnr lnr-home"></i> <span>Dashboard</span></a></li>
 
-
-                            <li class="roledlink Staff Admin Finance Super" style="visibility:hidden;">
-                                <a href="#subPages2" data-toggle="collapse" class="collapsed"><i class="lnr lnr-settings"></i> <span>Production</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-                                <div id="subPages2" class="collapse ">
-                                    <ul class="nav">
-                                        <li><a href="{{ url('/productionjobs')}}" class="">Production Jobs</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li class="roledlink Staff Admin Finance Super" style="visibility:hidden;">
-                                <a href="#subPages3" data-toggle="collapse" class="collapsed"><i class="lnr lnr-settings"></i> <span>Materials</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-                                <div id="subPages3" class="collapse ">
-                                    <ul class="nav">
-                                        <li><a href="{{ url('/materials')}}" class="">Production Materials</a></li>
-                                        <li><a href="{{ url('/supplies')}}" class="">Material Supplies</a></li>
-                                        <li><a href="{{ url('/mcheckouts')}}" class="">Material Checkouts</a></li>
-                                        <li><a href="{{ url('/material-damages')}}" class="">Damages</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li class="roledlink Staff Admin Finance Super" style="visibility:hidden;">
-                                <a href="#subPages4" data-toggle="collapse" class="collapsed"><i class="lnr lnr-items"></i> <span>Products</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-                                <div id="subPages4" class="collapse ">
-                                    <ul class="nav">
-                                        <li><a href="{{ url('/products')}}" class="">Product List</a></li>
-                                        <li><a href="{{ url('/psupplies')}}" class="">Product Supplies</a></li>
-                                        <li><a href="{{ url('/product-damages')}}" class="">Damages</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-
                             <li class="roledlink Admin Super Staff" style="visibility:hidden;">
                                 <a href="#subPages5" data-toggle="collapse" class="collapsed"><i class="lnr lnr-cart"></i> <span>Sales</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
                                 <div id="subPages5" class="collapse ">
                                     <ul class="nav">
                                         <li><a href="{{ url('/newsales')}}" class="roledlink Admin Super Staff">New Sales</a></li>
-                                        <li><a href="{{ url('/sales')}}" class="roledlink Admin Super Staff">Product Sales Records</a></li>
+                                        <li><a href="{{ url('/sales')}}" class="roledlink Admin Super Staff">Sales Records</a></li>
 
                                     </ul>
                                 </div>
                             </li>
 
+                            <li class="roledlink Admin Super Staff" style="visibility:hidden;">
+                                <a href="#subPages12" data-toggle="collapse" class="collapsed"><i class="lnr lnr-cart"></i> <span>Proforma</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                                <div id="subPages12" class="collapse ">
+                                    <ul class="nav">
+                                        <li><a href="{{ url('/newproforma')}}" class="roledlink Admin Super Staff">New Proforma</a></li>
+                                        <li><a href="{{ url('/proformas')}}" class="roledlink Admin Super Staff">All Proforma Invoices</a></li>
+
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="roledlink Staff Admin Finance Super" style="visibility:hidden;">
+                                <a href="#subPages6" data-toggle="collapse" class="collapsed"><i class="lnr lnr-users"></i> <span>Customers</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                                <div id="subPages6" class="collapse ">
+                                    <ul class="nav">
+                                        <li><a href="{{ url('/add-new')}}" class="">Add New</a></li>
+                                        <li><a href="{{ url('/customers')}}" class="">Customers</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="roledlink Admin Super Staff" style="visibility:hidden;">
+                                <a href="#subPages11" data-toggle="collapse" class="collapsed"><i class="lnr lnr-cog"></i> <span>Services</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                                <div id="subPages11" class="collapse ">
+                                    <ul class="nav">
+                                        <li><a href="{{ url('/new_service')}}" class="roledlink Admin Super Staff">New Service</a></li>
+                                        <li><a href="{{ url('/services')}}" class="roledlink Admin Super Staff">All Service Records</a></li>
+
+                                    </ul>
+                                </div>
+                            </li>
+
+
+                            <li class="roledlink Staff Admin Finance Super" style="visibility:hidden;">
+                                <a href="#subPages4" data-toggle="collapse" class="collapsed"><i class="lnr lnr-menu"></i> <span>Products</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                                <div id="subPages4" class="collapse ">
+                                    <ul class="nav">
+                                        <li><a href="{{ url('/products')}}" class="">Product List</a></li>
+                                        <li><a href="{{ url('/psupplies')}}" class="">Supplied Products</a></li>
+                                    </ul>
+                                </div>
+                            </li>
                             <li class="roledlink Staff Admin Finance Super" style="visibility:hidden;">
                                 <a href="#subPages6" data-toggle="collapse" class="collapsed"><i class="lnr lnr-users"></i> <span>Users</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
                                 <div id="subPages6" class="collapse ">
                                     <ul class="nav">
-                                        <li><a href="{{ url('/members')}}" class="">Personnel</a></li>
                                         <li><a href="{{ url('/customers')}}" class="">Customers</a></li>
+                                        <li><a href="{{ url('/members')}}" class="">Personnel</a></li>
                                         <li><a href="{{ url('/suppliers')}}" class="">Suppliers</a></li>
 
                                     </ul>
                                 </div>
                             </li>
 
-                            <li class="roledlink Admin Super Staff" style="visibility:hidden;">
-                                <a href="#subPages8" data-toggle="collapse" class="collapsed"><i class="lnr lnr-flag"></i> <span>Management</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-                                <div id="subPages8" class="collapse ">
-                                    <ul class="nav">
-                                        <li><a href="{{ url('/tasks')}}" class="">Manage Tasks/TODOs</a></li>
-                                        <li><a href="{{ url('/programmes')}}" class="">Manage Programmes</a></li>
-                                        <li><a href="{{ url('/attendance')}}" class="">Manage Attendance</a></li>
-                                        <li><a href="{{ url('/businesses')}}" class="roledlink Super">Manage Businesses</a></li>
-                                        <li><a href="{{ url('/help')}}">Basic Use</a></li>
-                                        <li><a href="{{ url('/security')}}">Security</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                            <li class="roledlink Admin Super Super" style="visibility:hidden;">
+                            <li class="roledlink Admin Super Finance" style="visibility:hidden;">
                                 <a href="#subPages9" data-toggle="collapse" class="collapsed"><i class="lnr lnr-list"></i> <span>Finance</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
                                 <div id="subPages9" class="collapse ">
                                     <ul class="nav">
@@ -234,6 +227,19 @@
                                     </ul>
                                 </div>
                             </li>
+
+                            <li class="roledlink Admin Super Staff" style="visibility:hidden;">
+                                <a href="#subPages8" data-toggle="collapse" class="collapsed"><i class="lnr lnr-flag"></i> <span>Management</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                                <div id="subPages8" class="collapse ">
+                                    <ul class="nav">
+                                        <li><a href="{{ url('/tasks')}}" class="">Manage Tasks/ToDo</a></li>
+                                        <li><a href="{{ url('/businesses')}}" class="roledlink Super">Manage Businesses</a></li>
+                                        <li><a href="{{ url('/help')}}">Basic Use</a></li>
+                                        <li><a href="{{ url('/security')}}">Security</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+
                             <li class="roledlink Admin Super Staff" style="visibility:hidden;">
                                 <a href="#subPages10" data-toggle="collapse" class="collapsed"><i class="lnr lnr-envelope"></i> <span>Communication</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
                                 <div id="subPages10" class="collapse ">
@@ -268,10 +274,16 @@
 		<div class="main">
 			<!-- MAIN CONTENT -->
 			<div class="main-content">
-				<div class="container-fluid">
+				<div class="container-fluid" style="position: relative !important; width: 100%;">
 					<!-----------------------------START YIELD PAGE CONTENT -->
 					@if (Session::get('message'))
-						<div class="alert alert-success alert-dismissible" role="alert">
+                        @php
+                            $type = 'success';
+                            if (Session::get('type')=='Error'){
+                                $type = 'danger';
+                            }
+                        @endphp
+						<div class="alert alert-{{$type}} alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
 							<i class="fa fa-check-circle"></i> {!!Session::get('message')!!}
 						</div>
@@ -355,7 +367,7 @@
                 </div>
 
 				<div class="form-group">
-                    <label for="address">Address</label>
+                    <label for="address">Address | Phone Number</label>
                     <input type="text" name="address" id="address" class="form-control" value="{{$settings->address}}">
                 </div>
 
@@ -452,7 +464,6 @@
 
                                 @endforeach
 
-
                             </select>
 
                         </div>
@@ -471,11 +482,6 @@
                No Business to Switch
 
                 @endif
-
-
-
-
-
             </form>
         </div>
 
@@ -615,7 +621,6 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.print.min.js" /></script>
 
 	<script>
-
 
 		// TABLES WITH FILTERS
 		$('#products thead tr').clone(true).appendTo( '#products thead' );
@@ -1109,7 +1114,7 @@
             var name = $('#item'+item).attr("data-name");
             var munit = $('#item'+item).attr("data-munit");
 
-            $("table tbody#item_list").append("<tr id='itrow"+item+"'><td class='form-group'><input id='item"+item+"' type='hidden' name='product_id[]' class='form-control' value='"+pid+"' readonly><h5 id='itname"+item+"'>"+name+"</h5><small><i>(Stock: "+in_stock+")</i></small></td><td class='form-group'><input id='qty"+item+"'  onchange='changeQty("+item+")' type='number' value='1' name='qty[]' class='form-control quantity' step='0.01'><span><small>"+munit+"</small></span></td><td class='form-group'><input id='unit"+item+"' type='number' onchange='changeUc("+item+")' name='unit[]'  value='"+unit+"' class='form-control'></td><td class='form-group'><input id='amount"+item+"' type='number' name='amount[]'  value='"+unit+"' class='form-control amount' readonly></td><td class='form-group'><a href='#' class='badge badge-danger removeitem' id='re"+item+"'>X</a></td></tr>");
+            $("table tbody#item_list").append("<tr id='itrow"+item+"'><td class='form-group'><input id='item"+item+"' type='hidden' name='product_id[]' class='form-control' value='"+pid+"' readonly><h5 id='itname"+item+"'>"+name+"</h5><small><i>(Stock: "+in_stock+")</i></small></td><td class='form-group'><input id='qty"+item+"'  onchange='changeQty("+item+")' type='number' value='1' name='qty[]' class='form-control quantity'><span><small>"+munit+"</small></span></td><td class='form-group'><input id='unit"+item+"' type='number' onchange='changeUc("+item+")' name='unit[]'  value='"+unit+"' class='form-control'></td><td class='form-group'><input id='amount"+item+"' type='number' name='amount[]'  value='"+unit+"' class='form-control amount' readonly></td><td class='form-group'><a href='#' class='badge badge-danger removeitem' id='re"+item+"'>X</a></td></tr>");
 
             reCalc();
 
@@ -1301,12 +1306,8 @@
 
         });
 
-
         $("#forcheckout").hide();
         $("#forcompleted").hide();
-
-
-
 
 	</script>
 

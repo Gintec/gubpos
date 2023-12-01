@@ -16,7 +16,7 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->double('amount',10,2)->nullable();
+            $table->double('amount',10,2)->default(0)->nullable();
             $table->unsignedBigInteger('account_head')->index()->nullable();
             $table->foreign('account_head')->references('id')->on('accountheads')->onDelete('cascade');
 
@@ -25,6 +25,7 @@ class CreateTransactionsTable extends Migration
             $table->string('upload',50)->nullable();
             $table->string('detail',100)->nullable();
             $table->string('from',40)->nullable();
+            $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
             $table->string('to',40)->nullable();
             $table->unsignedBigInteger('approved_by')->index()->nullable();
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
@@ -33,7 +34,9 @@ class CreateTransactionsTable extends Migration
 
             $table->string('payment_status',100)->nullable();
             $table->string('transaction_id',40)->nullable();
-            $table->string('balance',40)->nullable();
+            $table->double('balance',10,2)->nullable();
+            $table->double('vat',10,2)->default(0)->nullable();
+            $table->double('discount',10,2)->default(0)->nullable();
             $table->string('payment_type',100)->nullable();
             $table->string('payment_particulars',40)->nullable();
             $table->string('beneficiary',40)->nullable();

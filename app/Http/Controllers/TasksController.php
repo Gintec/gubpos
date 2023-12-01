@@ -196,7 +196,7 @@ class TasksController extends Controller
 
         $tasks = tasks::paginate(50);
         $followups = followups::paginate(50);
-
+        /*
         if($request->phone_number!=""){
 
             $recipients = $request->phone_number;
@@ -220,6 +220,7 @@ class TasksController extends Controller
 
             $message = file_get_contents("http://www.smslive247.com/http/index.aspx?cmd=sendmsg&sessionid=".$sessionid."&message=".urlencode($body)."&sender=CHURCH&sendto=".$recipients."&msgtype=0");
         }
+        */
 
         return redirect()->back()->with(['tasks'=>$tasks,'followups'=>$followups]);
 
