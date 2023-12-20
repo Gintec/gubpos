@@ -8,7 +8,7 @@
             <div class="panel">
                 <div class="panel-heading">
                         <div style="text-align: center;">
-                            <a href="{{url('/new-service')}}" class="btn btn-success"><i class="lnr lnr-cart"></i> Add New Service</a>
+                            <a href="{{url('/new_service')}}" class="btn btn-success"><i class="lnr lnr-cart"></i> Add New Service</a>
                         </div>
                 </div>
                 <div class="panel-body">

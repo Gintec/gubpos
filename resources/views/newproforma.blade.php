@@ -73,7 +73,7 @@
 
                 <div class="panel-body">
 
-                    <div class="col-md-7" style="float: right;">
+                    <div class="col-md-8" style="float: right;">
                         <form action="{{ route('addproforma') }}" method="post" id="selecteditems">
                             @csrf
                             <table class="table" id="itemlist">
@@ -103,15 +103,15 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><input type="number" class="form-control" value="0" id="total_due" name="total_due" readonly></td>
-                                        <td><input type="number" class="form-control" value="0" id="amount_paid" name="amount_paid"></td>
-                                        <td><input type="number" class="form-control" value="0" id="discount" name="discount"></td>
-                                        <td><input type="number" class="form-control" value="0" step="0.01" id="tax" name="tax"></td>
-                                        <td><input type="number" class="form-control" value="7.5" step="0.01" id="tax_percent" name="tax_percent"></td>
+                                        <td><input type="number" class="form-control numberInput" value="0" id="total_due" name="total_due" readonly></td>
+                                        <td><input type="number" class="form-control numberInput" value="0" id="amount_paid" name="amount_paid" readonly></td>
+                                        <td><input type="number" class="form-control numberInput" value="0" id="discount" name="discount" required></td>
+                                        <td><input type="number" class="form-control numberInput" value="0" step="0.01" id="tax" name="tax" required></td>
+                                        <td><input type="number" class="form-control numberInput" value="7.5" step="0.01" id="tax_percent" name="tax_percent" required></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2"><input type="text" class="form-control" name="details" placeholder="details e.g. on credit"></td>
-                                        <td><input type="text" class="form-control datepicker" value="{{date('Y-m-d')}}" name="dated_sold" placeholder="Date Sold"></td>
+                                        <td><input type="text" class="form-control datepicker" value="{{date('Y-m-d')}}" name="dated_sold" placeholder="Date"></td>
                                         <td colspan="2">
                                             <input type="text" name="group_id" id="group_id" placeholder="Invoice Number" class="form-control">
 
@@ -123,12 +123,13 @@
                             <div class="row">
                                 <div class="form-group col-md-8" style="margin-top: 20px;">
                                     <input type="hidden" name="buyer" id="buyer">
-                                            <input list="customers" class="form-control" name="customer" id="customer" placeholder="Customer Name">
-                                            <datalist id="customers">
-                                                @foreach ($settings->personnel->where('category','Customer') as $cus)
-                                                    <option value="{{$cus->name}}">{{$cus->id}}</option>
-                                                @endforeach
-                                            </datalist>
+                                        <select name="customer" id="select_customer" class="form-control">
+                                            <option value="2" selected>Select Customer</option>
+                                            <option value="New">New Customer</option>
+                                            @foreach ($settings->personnel->where('category','Customer') as $cus)
+                                                <option value="{{$cus->id}}">{{$cus->name}}</option>
+                                            @endforeach
+                                        </select>
                                 </div>
 
                                 <div class="form-group col-md-4" style="margin-top: 20px;">
@@ -138,17 +139,41 @@
                                         </select>
                                 </div>
 
+                            </div>
+
+                            <div id="customer_form">
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <input type="text" name="customer_name" placeholder="Customer Name" class="form-control">
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <input type="text" name="phone_number" placeholder="Phone Number" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <input type="text" name="address" placeholder="Delivery Address" class="form-control">
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <input type="text" name="email" placeholder="Email Address" class="form-control">
+                                    </div>
+                                </div>
+
+                            </div>
+
                                 <div class="form-group col-md-6" style="float: right !important; margin-top: 20px;">
                                     <button type="submit" class="btn btn-primary">
                                         {{ __('Create Proforma') }}
                                     </button>
                                 </div>
-                            </div>
+
 
                         </form>
                     </div>
 
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         @foreach ($products as $product)
                             <a href="#" data-pid="{{$product->id}}" data-munit="{{$product->measurement_unit}}"  data-price="{{$product->price}}" data-in_stock="{{$product->stock->quantity}}" data-name="{{$product->name}}" onclick="addItem({{$product->id}})" id="item{{$product->id}}">
                                 <div class="square bg img" style="background-image: url('{{asset('public/images/products/'.$product->picture)}}');">

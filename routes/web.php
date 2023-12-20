@@ -113,12 +113,15 @@ Route::get('/sales', [App\Http\Controllers\ProductSalesController::class, 'index
 Route::get('/newsales', [App\Http\Controllers\ProductSalesController::class, 'sale'])->name('newsales')->middleware('role:Finance,Admin,Super,Staff');
 
 Route::post('/addsales', [App\Http\Controllers\ProductSalesController::class, 'store'])->name('addsales')->middleware('role:Finance,Admin,Super,Staff');
+Route::post('/update-invoice', [App\Http\Controllers\ProductSalesController::class, 'updateInvoice'])->name('update-invoice')->middleware('role:Finance,Admin,Super,Staff');
+
 Route::get('/invoice/{category}/{tid}', [App\Http\Controllers\ProductSalesController::class, 'invoice'])->name('invoice')->middleware('role:Finance,Admin,Super,Staff');
 // Route::get('/pinvoice/{category}/{tid}', [App\Http\Controllers\ProductSalesController::class, 'invoice'])->name('invoice')->middleware('role:Finance,Admin,Super,Staff');
 Route::get('/send-document/{category}/{tid}', [App\Http\Controllers\ProductSalesController::class, 'sendDocument'])->name('send-document')->middleware('role:Finance,Admin,Super,Staff');
 
 Route::get('/new-invoice/{category}/{tid}', [App\Http\Controllers\ProductSalesController::class, 'newInvoice'])->name('new-invoice')->middleware('role:Finance,Admin,Super,Staff');
 Route::get('/proformas', [App\Http\Controllers\ProductSalesController::class, 'proformas'])->name('proforma')->middleware('role:Finance,Admin,Super,Staff');
+Route::get('/invoices', [App\Http\Controllers\ProductSalesController::class, 'invoices'])->name('invoices')->middleware('role:Finance,Admin,Super,Staff');
 
 Route::get('/newproforma', [App\Http\Controllers\ProductSalesController::class, 'newproforma'])->name('newproforma')->middleware('role:Finance,Admin,Super,Staff');
 Route::post('/addproforma', [App\Http\Controllers\ProductSalesController::class, 'addproforma'])->name('addproforma')->middleware('role:Finance,Admin,Super,Staff');
@@ -131,9 +134,9 @@ Route::get('/edit-invoice/{tid}', [App\Http\Controllers\ProductSalesController::
 Route::get('/services', [App\Http\Controllers\ServiceController::class,'index'])->name('services');
 Route::get('/new_service', [App\Http\Controllers\ServiceController::class,'create'])->name('new_service');
 Route::get('/service/{id}', [App\Http\Controllers\ServiceController::class,'edit'])->name('service');
-Route::get('/edit-service/{id}', [App\Http\Controllers\ServiceController::class,'edit'])->name('edit-service');
+Route::get('/edit-service/{id}', [App\Http\Controllers\ServiceController::class,'edit'])->name('edit-service')->middleware('role:Super');
 Route::post('/save-service', [App\Http\Controllers\ServiceController::class,'store'])->name('save-service');
-Route::get('/del-service/{id}', [App\Http\Controllers\ServiceController::class,'edit'])->name('del-service');
+Route::get('/del-service/{id}', [App\Http\Controllers\ServiceController::class,'delete'])->name('del-service');
 
 // PRODUCT DAMAGES
 Route::get('/product-damages', [App\Http\Controllers\ProductsController::class, 'damages'])->name('product-damages')->middleware('role:Admin,Super,Staff');

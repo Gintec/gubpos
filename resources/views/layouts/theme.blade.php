@@ -166,11 +166,13 @@
                             </li>
 
                             <li class="roledlink Admin Super Staff" style="visibility:hidden;">
-                                <a href="#subPages12" data-toggle="collapse" class="collapsed"><i class="lnr lnr-cart"></i> <span>Proforma</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                                <a href="#subPages12" data-toggle="collapse" class="collapsed"><i class="lnr lnr-cart"></i> <span>Invoices</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
                                 <div id="subPages12" class="collapse ">
                                     <ul class="nav">
-                                        <li><a href="{{ url('/newproforma')}}" class="roledlink Admin Super Staff">New Proforma</a></li>
-                                        <li><a href="{{ url('/proformas')}}" class="roledlink Admin Super Staff">All Proforma Invoices</a></li>
+                                        <li><a href="{{ url('/invoices')}}" class="roledlink Admin Super Staff">Sales Invoices</a></li>
+
+                                        <li><a href="{{ url('/newproforma')}}" class="roledlink Admin Super Staff">New Proforma Invoice</a></li>
+                                        <li><a href="{{ url('/proformas')}}" class="roledlink Admin Super Staff">Proforma Invoices</a></li>
 
                                     </ul>
                                 </div>
@@ -206,8 +208,8 @@
                                 </div>
                             </li>
                             <li class="roledlink Staff Admin Finance Super" style="visibility:hidden;">
-                                <a href="#subPages6" data-toggle="collapse" class="collapsed"><i class="lnr lnr-users"></i> <span>Users</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
-                                <div id="subPages6" class="collapse ">
+                                <a href="#subPages13" data-toggle="collapse" class="collapsed"><i class="lnr lnr-users"></i> <span>Users</span> <i class="icon-submenu lnr lnr-chevron-left"></i></a>
+                                <div id="subPages13" class="collapse ">
                                     <ul class="nav">
                                         <li><a href="{{ url('/customers')}}" class="">Customers</a></li>
                                         <li><a href="{{ url('/members')}}" class="">Personnel</a></li>
@@ -234,8 +236,9 @@
                                     <ul class="nav">
                                         <li><a href="{{ url('/tasks')}}" class="">Manage Tasks/ToDo</a></li>
                                         <li><a href="{{ url('/businesses')}}" class="roledlink Super">Manage Businesses</a></li>
+                                        <li><a href="{{ url('/categories')}}">Manage Categories</a></li>
                                         <li><a href="{{ url('/help')}}">Basic Use</a></li>
-                                        <li><a href="{{ url('/security')}}">Security</a></li>
+
                                     </ul>
                                 </div>
                             </li>
@@ -285,7 +288,7 @@
                         @endphp
 						<div class="alert alert-{{$type}} alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-							<i class="fa fa-check-circle"></i> {!!Session::get('message')!!}
+							<i class="fa fa-check-circle"></i> <b>{!!Session::get('message')!!}</b>
 						</div>
 					@endif
 					@yield('content')
@@ -1114,7 +1117,14 @@
             var name = $('#item'+item).attr("data-name");
             var munit = $('#item'+item).attr("data-munit");
 
-            $("table tbody#item_list").append("<tr id='itrow"+item+"'><td class='form-group'><input id='item"+item+"' type='hidden' name='product_id[]' class='form-control' value='"+pid+"' readonly><h5 id='itname"+item+"'>"+name+"</h5><small><i>(Stock: "+in_stock+")</i></small></td><td class='form-group'><input id='qty"+item+"'  onchange='changeQty("+item+")' type='number' value='1' name='qty[]' class='form-control quantity'><span><small>"+munit+"</small></span></td><td class='form-group'><input id='unit"+item+"' type='number' onchange='changeUc("+item+")' name='unit[]'  value='"+unit+"' class='form-control'></td><td class='form-group'><input id='amount"+item+"' type='number' name='amount[]'  value='"+unit+"' class='form-control amount' readonly></td><td class='form-group'><a href='#' class='badge badge-danger removeitem' id='re"+item+"'>X</a></td></tr>");
+            munit = addCommas(munit);
+            unit = addCommas(unit);
+
+            $("table tbody#item_list").append("<tr id='itrow"+item+"'><td class='form-group'><input id='item"+item+"' type='hidden' name='product_id[]' class='form-control' value='"+pid+"' readonly><h5 id='itname"+item+"'>"+name+"</h5><small><i>(Stock: "+in_stock+")</i></small></td><td class='form-group'><input id='qty"+item+"'  onchange='changeQty("+item+")' type='number' value='1' name='qty[]' class='form-control quantity'><span><small>"+munit+"</small></span></td><td class='form-group'><input id='unit"+item+"' type='text' onchange='changeUc("+item+")' name='unit[]'  value='"+unit+"' class='form-control numberInput'  pattern='[0-9,]*'></td><td class='form-group'><input id='amount"+item+"' type='text' name='amount[]'  value='"+unit+"' class='form-control amount numberInput'  pattern='[0-9,]*' readonly></td><td class='form-group'><a href='#' class='badge badge-danger removeitem' id='re"+item+"'>X</a></td></tr>");
+
+            // let value = $('#item'+item+).val().replace(/[^\d,]/g, ''); // Remove non-digit and non-comma characters
+            // value = addCommas(value);
+            // $('.numberInput').val(value);
 
             reCalc();
 
@@ -1124,9 +1134,10 @@
         function changeQty(clicked){
             // RECALCULATE AMOUNT OF ONE ITEM ON QUANTITY CHANGE
             var qty = $("#qty"+clicked).val();
-            var unit_rate = $("#unit"+clicked).val();
+            var unit_rate = $("#unit"+clicked).val().replace(/,/g, '');
             var new_amount = parseFloat(qty)*parseFloat(unit_rate);
-            $("#amount"+clicked).val(new_amount.toFixed(2));
+            new_amount = addCommas(new_amount);
+            $("#amount"+clicked).val(new_amount);
             reCalc();
         }
 
@@ -1136,10 +1147,11 @@
 
         function changeUc(clicked){
             // RECALCULATE AMOUNT OF ONE ITEM ON QUANTITY CHANGE
-            var uc = $("#unit"+clicked).val();
-            var qty = $("#qty"+clicked).val();
+            var uc = $("#unit"+clicked).val().replace(/,/g, '');
+            var qty = $("#qty"+clicked).val().replace(/,/g, '');
             var new_amount = parseFloat(qty)*parseFloat(uc);
-            $("#amount"+clicked).val(new_amount.toFixed(2));
+            new_amount = addCommas(new_amount);
+            $("#amount"+clicked).val(new_amount);
             reCalc();
         }
 
@@ -1149,13 +1161,17 @@
             // RECALCULATE TOTAL AMOUNT
             var sum = 0;
             $(".amount").each(function(){
-                sum += +$(this).val();
+                sum += +$(this).val().replace(/,/g, '');
+
+                // alert($(this).val().replace(/,/g, ''));
             });
             $("#total_due").val(sum.toFixed(2));
 
+            // alert(sum);
+
 
             // RECALCULATE TOTAL DISCOUNT
-            var total_discount = $("#discount").val();
+            var total_discount = $("#discount").val().replace(/,/g, '');
 
             //$(".discount").each(function(){
               //  total_discount += +$(this).val();
@@ -1163,7 +1179,7 @@
 
             // $("#total_discount").val(total_discount.toFixed(2));
 
-            var tax_percent = $("#tax_percent").val();
+            var tax_percent = $("#tax_percent").val().replace(/,/g, '');
             tax = parseFloat(tax_percent)*(parseFloat(sum)/100);
 
             $("#tax").val(tax);
@@ -1171,10 +1187,10 @@
             // var total_discount = $("#total_discount").val();
 
             var new_sum = (parseFloat(sum)+parseFloat(tax)) - parseFloat(total_discount);
+            new_sum = addCommas(new_sum);
+            $("#total_due").val(new_sum);
 
-            $("#total_due").val(new_sum.toFixed(2));
-
-            // $("#amount_paid").val($("#total_due").val());
+            $("#amount_paid").val($("#total_due").val());
 
         }
 
@@ -1306,9 +1322,29 @@
 
         });
 
+        $("#select_customer").on('change',function(event) {
+            var customer = $(this).find(':selected').val();
+            if(customer=="New"){
+                $("#customer_form").show();
+            }else{
+                $("#customer_form").hide();
+            }
+        });
+
         $("#forcheckout").hide();
         $("#forcompleted").hide();
+        $("#customer_form").hide();
 
+        $('.numberInput').on('input', function(event) {
+            let value = $(this).val().replace(/[^\d,]/g, ''); // Remove non-digit and non-comma characters
+            value = addCommas(value);
+            $(this).val(value);
+        });
+
+
+        function addCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
 	</script>
 
 

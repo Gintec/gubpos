@@ -23,6 +23,8 @@ class CreateServicesTable extends Migration
             $table->text('description')->nullable()->nullable();
             $table->string('status',40)->nullable();
             $table->decimal('amount', 10, 2)->nullable();
+            $table->decimal('amountpaid', 10, 2)->nullable();
+
             $table->timestamps();
         });
     }

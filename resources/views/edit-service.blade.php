@@ -8,43 +8,56 @@
         <div class="panel-body">
             <form action="{{ route('save-service') }}" method="POST">
                 @csrf
+                <input type="hidden" name="id" value="{{$service->id}}">
                 <div class="form-group">
-                    <label for="user_id">User ID:</label>
-                    <input type="number" class="form-control" id="user_id" name="user_id" required>
+                    <label for="customer">Customer Name: {{$service->user->name}}</label>
+                    <input type="hidden" class="form-control" id="customer" name="customer" value="{{$service->customer}}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="start_date">Start Date:</label>
-                    <input type="date" class="form-control" id="start_date" name="start_date" required>
+                    <input type="text" class="form-control datepicker" id="start_date" name="start_date" value="{{$service->start_date}}" >
                 </div>
 
                 <div class="form-group">
                     <label for="completion_date">Completion Date:</label>
-                    <input type="date" class="form-control" id="completion_date" name="completion_date" required>
+                    <input type="text" class="form-control datepicker" id="completion_date" name="completion_date" value="{{$service->completion_date}}" >
                 </div>
 
                 <div class="form-group">
                     <label for="category">Category:</label>
-                    <input type="text" class="form-control" id="category" name="category" maxlength="50" required>
+                    <select class="form-control" name="category" id="category">
+                        <option value="{{$service->category}}" selected>{{$service->category}}</option>
+                        @foreach ($categories as $cat)
+                            <option value="{{$cat->title}}">{{$cat->title}}</option>
+                        @endforeach
+
+                    </select>
                 </div>
 
                 <div class="form-group">
                     <label for="description">Description:</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{$service->description}}</textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="status">Status:</label>
-                    <input type="text" class="form-control" id="status" name="status" maxlength="40" required>
+                    <input type="text" class="form-control" id="status" name="status" maxlength="40" value="{{$service->status}}" >
                 </div>
 
                 <div class="form-group">
                     <label for="amount">Amount:</label>
-                    <input type="number" step="0.01" class="form-control" id="amount" name="amount" required>
+                    <input type="number" class="form-control" id="amount" name="amount" value="{{$service->amount}}"">
                 </div>
 
+                <div class="form-group">
+                    <label for="amountpaid">Amount Paid:</label>
+                    <input type="number" class="form-control" id="amountpaid" name="amountpaid" value="{{$service->amountpaid}}"">
+                </div>
+                <label>Submit Form</label> <br>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
 
         </div>
     </div>
+@endsection

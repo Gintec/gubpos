@@ -73,8 +73,9 @@
                 <div class="panel-body">
 
                     <div class="col-md-7" style="float: right;">
-                        <form action="{{ route('addsales') }}" method="post" id="selecteditems">
+                        <form action="{{ route('update-invoice') }}" method="post" id="selecteditems">
                             @csrf
+                            <input type="hidden" name="id" value="{{$trans->id}}">
                             <table class="table" id="itemlist">
                                 <thead>
                                     <tr class="spechead">
@@ -91,6 +92,7 @@
 
                                     <tr id='itrow{{$pr->product_id}}'>
                                         <td class='form-group'>
+                                            <input name="pid[]" value="{{$pr->id}}" type="hidden">
                                             <input id='item{{$pr->product_id}}' type='hidden' name='product_id[]' class='form-control' value='{{$pr->product_id}}' readonly>
                                             <h5 id='itname{{$pr->product->id}}'>{{$pr->product->name}}</h5>
                                             <small><i>(Stock: {{$pr->product->stock->quantity}})</i></small>
@@ -151,11 +153,28 @@
                                         </select>
                                 </div>
 
-                                <div class="form-group col-md-6" style="float: right !important; margin-top: 20px;">
-                                    <button type="submit" class="btn btn-primary">
-                                        {{ __('Update') }}
-                                    </button>
+                                <div class="row">
+                                    @if ($trans->payment_status=="Proforma")
+                                        <div class="form-group col-md-4" style="margin-top: 20px;">
+                                            <select class="form-control" name="convert" id="convert">
+                                                <option value="" selected>Convert to Invoice?</option>
+                                                <option value="Yes">Yes, Make Invoice</option>
+                                                <option value="No">Proforma</option>
+
+                                            </select>
+                                        </div>
+                                    @endif
+
+
+
+                                    <div class="form-group col-md-6" style="float: right !important; margin-top: 20px;">
+                                        <button type="submit" class="btn btn-primary">
+                                            {{ __('Update') }}
+                                        </button>
+                                    </div>
+
                                 </div>
+
                             </div>
 
                         </form>

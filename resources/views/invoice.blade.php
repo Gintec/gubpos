@@ -6,6 +6,9 @@
         $fmt = numfmt_create($locale, NumberFormatter::SPELLOUT);
     @endphp
     <h4 class="page-title" style="font-weight: bold; text-align: center;">{{ucwords($category)}} No.: {{strtoupper($sale->reference_no)}} </h4>
+    <div class="justify-content-end">
+        <small style="color: green"><i>{{$sale->pay_status}}</i></small>
+    </div>
     <div class="row" style="margin: 10px auto;">
 
             <div class="panel">
@@ -15,7 +18,10 @@
                         <thead>
                             <tr>
                                 <th colspan="2">Name: {{$customer->name}}</th>
-                                <th>Date: {{$customer->dated}}</th>
+                                @php
+                                    $timestamp = strtotime($sale->dated);
+                                @endphp
+                                <th>Date: {{date('jS F, Y', $timestamp)}}</th>
                             </tr>
 
                         </thead>
@@ -30,7 +36,7 @@
                     <hr>
 
                     <h4>Products Details</h4>
-                    <table class="table responsive-table">
+                    <table class="table responsive-table table-striped" style="padding: 0px;">
                         <thead>
                             <tr style="color: ">
                                 <th>Description</th>
@@ -42,13 +48,22 @@
                         <tbody>
                             @foreach ($products as $pr)
                                 <tr>
-                                    <td>{{$pr->product->name}}</td>
+                                    <td>{{$pr->product->type}} {{$pr->product->name}}</td>
                                     <td>{{$pr->quantity}}</td>
                                     <td>{{$pr->price}}</td>
                                     <td>{{$pr->amount_paid}}</td>
                                     <td>{{$pr->dated}}</td>
                                 </tr>
                             @endforeach
+                            <tr>
+                                <td colspan="3" style="text-align: right;">Vat:</td><td>{{$sale->vat}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align: right;">Discount:</td><td>{{$sale->discount}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align: right;">Balance:</td><td>{{$sale->balance}}</td>
+                            </tr>
                             <tr>
                                 <td colspan="3">
                                     Total Amount:
