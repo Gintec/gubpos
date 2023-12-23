@@ -6,6 +6,7 @@ use App\Models\product_sales;
 use App\Models\products;
 use App\Models\product_stocks;
 use App\Models\User;
+use App\Models\delivery;
 use Illuminate\Support\Facades\Hash;
 use PDF;
 
@@ -30,15 +31,25 @@ class ProductSalesController extends Controller
 
     public function invoices()
     {
-        $transactions = transactions::where('account_head',1)->paginate(50);
+        $transactions = transactions::where('account_head',1)->orderBy('id','desc')->paginate(50);
         $users = User::select('id','name')->get();
 
         return view('invoices', compact('transactions','users'));
     }
 
+    public function generateInvoiceReport(Request $request)
+    {
+        $from = $request->from;
+        $to = $request->to;
+
+        $transactions = transactions::whereBetween('dated', [$from, $to])->where('account_head',1)->orderBy('id','desc')->get();
+        $users = User::select('id','name')->get();
+        return view('invoice_report', compact('transactions','users','from','to'));
+    }
+
     public function proformas()
     {
-        $transactions = transactions::where('account_head',5)->paginate(50);
+        $transactions = transactions::where('account_head',5)->orderBy('id','desc')->paginate(50);
         $users = User::select('id','name')->get();
 
         return view('proformas', compact('transactions','users'));
@@ -75,13 +86,17 @@ class ProductSalesController extends Controller
             $pay_status = "Not Paid";
             $balance = $request->total_due;
         }
+        $delivery_fee = 0;
+        if(isset($request->delivery_fee)){
+            $delivery_fee=$request->delivery_fee;
+        }
+        $address = "";
 
 
-
-        if (User::where('id', '=', $request->buyer)->exists()) {
-            $buyer = $request->buyer;
-         }else{
-            if($request->customer=='New'){
+        if (User::where('id', '=', $request->customer)->exists()) {
+            $buyer = $request->customer;
+            $address = user::select('address')->where('id',$buyer)->first()->address;
+         }elseif($request->customer=='New'){
                 $email = 'guest@gubabi.com';
                 if(isset($request->email) && $request->email!=''){
                     $email = $request->email;
@@ -101,17 +116,21 @@ class ProductSalesController extends Controller
                     'status'=>"InActive",
                     'setting_id' => Auth()->user()->setting_id
                 ])->id;
+
+                $address = $request->address;
             }else{
                 $buyer = 1;
             }
 
-         }
+
 
          if($request->group_id==""){
             $group_id =  substr(md5(uniqid(mt_rand(), true).microtime(true)),0, 7);
          }else{
             $group_id = $request->group_id;
          }
+
+
 
         foreach($request->product_id as $key => $product_id){
 
@@ -143,7 +162,7 @@ class ProductSalesController extends Controller
         // RECORD TRANSACTION
         $tid = transactions::create([
             'title'=>"Item Sales - Invoice No: ".$group_id,
-            'amount'=>str_replace(',', '',$request->total_due),
+            'amount'=>str_replace(',', '',$request->total_due)+$delivery_fee,
             'account_head' => 1,
             'dated' => $request->dated_sold,
             'reference_no' => $group_id,
@@ -163,6 +182,16 @@ class ProductSalesController extends Controller
 
         // $sales = product_sales::paginate(50);
 
+        if($delivery_fee>0){
+            delivery::create([
+                'customer'=>$buyer,
+                'invoice_no'=>$tid,
+                'amount'=>$delivery_fee,
+                'delivery_address'=>$address,
+                'status'=>'In Progress'
+            ]);
+        }
+
         $message = "Sales Successful";
         return redirect()->back()->with(['tid'=>$tid,'message'=>$message]);
 
@@ -173,11 +202,19 @@ class ProductSalesController extends Controller
         $request->amount_paid=0;
         $pay_status = $request->pay_method;
 
-        if (User::where('id', '=', $request->buyer)->exists()) {
-            $buyer = $request->buyer;
-         }else{
-            if($request->customer=='New'){
+        $delivery_fee = 0;
+        if(isset($request->delivery_fee)){
+            $delivery_fee=$request->delivery_fee;
+        }
+
+        $address = "";
+
+        if (User::where('id', '=', $request->customer)->exists()) {
+            $buyer = $request->customer;
+            $address = user::select('address')->where('id',$buyer)->first()->address;
+         }elseif($request->customer=='New'){
                 $email = 'guest@gubabi.com';
+                $address = $request->address;
                 if(isset($request->email) && $request->email!=''){
                     $email = $request->email;
                 }
@@ -199,8 +236,6 @@ class ProductSalesController extends Controller
             }else{
                 $buyer = 1;
             }
-
-         }
 
          if($request->group_id==""){
             $group_id =  substr(md5(uniqid(mt_rand(), true).microtime(true)),0, 7);
@@ -227,7 +262,7 @@ class ProductSalesController extends Controller
         // RECORD TRANSACTION
         $tid = transactions::create([
             'title'=>$pay_status." No: ".$group_id,
-            'amount'=>str_replace(',', '',$request->total_due),
+            'amount'=>str_replace(',', '',$request->total_due)+$delivery_fee,
             'account_head' => 5,
             'dated' => $request->dated_sold,
             'reference_no' => $group_id,
@@ -244,6 +279,16 @@ class ProductSalesController extends Controller
             'beneficiary' => Auth()->user()->setting_id,
             'setting_id' => Auth()->user()->setting_id
         ])->id;
+
+        if($delivery_fee>0){
+            delivery::create([
+                'customer'=>$buyer,
+                'invoice_no'=>$tid,
+                'amount'=>$delivery_fee,
+                'delivery_address'=>$address,
+                'status'=>'Proforma'
+            ]);
+        }
 
         // $sales = product_sales::paginate(50);
         $message = $pay_status." Created Successfully";
@@ -265,12 +310,12 @@ class ProductSalesController extends Controller
             $pay_status = "Not Paid";
             $balance = $request->total_due;
         }
-
-
-
-
-        $buyer = $request->buyer;
-
+        $buyer = $request->customer;
+        $address = user::select('address')->where('id',$buyer)->first()->address;
+        $delivery_fee = 0;
+        if(isset($request->delivery_fee)){
+            $delivery_fee=$request->delivery_fee;
+        }
 
 
          if($request->group_id==""){
@@ -280,15 +325,14 @@ class ProductSalesController extends Controller
          }
 
         foreach($request->product_id as $key => $product_id){
-
             product_sales::updateOrCreate(['id'=>$request->pid[$key]],[
                 'product_id' => $product_id,
                 'quantity' => $request->qty[$key],
                 'sales_person' => Auth()->user()->id,
                 'confirmed_by' => Auth()->user()->id,
                 'buyer' => $buyer,
-                'price' => $request->unit[$key],
-                'amount_paid' => $request->amount[$key],
+                'price' => str_replace(',', '',$request->unit[$key]),
+                'amount_paid' => str_replace(',', '',$request->amount[$key]),
                 'pay_status' => $pay_status,
                 'dated_sold' => $request->dated_sold,
                 'group_id' => $group_id,
@@ -309,13 +353,12 @@ class ProductSalesController extends Controller
                 // ])->decrement('quantity',$request->qty[$key]);
                 $accounthead = 1;
             }
-
         }
 
         // RECORD TRANSACTION
-        $tid = transactions::updateOrCreate(['id',$request->id],[
+        $tid = transactions::updateOrCreate(['id'=>$request->id],[
             'title'=>"Item Sales - Invoice No: ".$group_id,
-            'amount'=>$request->total_due,
+            'amount'=>str_replace(',', '',$request->total_due)+$delivery_fee,
             'account_head' => $accounthead,
             'dated' => $request->dated_sold,
             'reference_no' => $group_id,
@@ -326,18 +369,26 @@ class ProductSalesController extends Controller
             'recorded_by' => Auth()->user()->id,
             'payment_status' => $pay_status,
             'transaction_id' => $group_id,
-            'balance' => $request->total_due-$request->amount_paid,
-            'vat' => $request->tax,
-            'discount'=>$request->discount,
+            'balance' => str_replace(',', '',$request->total_due)-str_replace(',', '',$request->amount_paid),
+            'vat' => str_replace(',', '',$request->tax),
+            'discount'=>str_replace(',', '',$request->discount),
             'beneficiary' => Auth()->user()->setting_id,
             'setting_id' => Auth()->user()->setting_id
         ])->id;
 
-        // $sales = product_sales::paginate(50);
+        if($delivery_fee>0){
+            delivery::updateOrCreate(['invoice_no'=>$tid],[
+                'customer'=>$buyer,
+                'invoice_no'=>$tid,
+                'amount'=>$delivery_fee,
+                'delivery_address'=>$address,
+                'status'=>$pay_status
+            ]);
+        }
 
+        // $sales = product_sales::paginate(50);
         $message = "Invoice Successfully Updated";
         return redirect()->back()->with(['tid'=>$tid,'message'=>$message]);
-
     }
 
     public function sale()

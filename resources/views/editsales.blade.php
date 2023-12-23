@@ -72,10 +72,25 @@
 
                 <div class="panel-body">
 
+                    <div class="col-md-5">
+                        @foreach ($products as $product)
+                            <a href="#" data-pid="{{$product->id}}" data-munit="{{$product->measurement_unit}}"  data-price="{{$product->price}}" data-in_stock="{{$product->stock->quantity}}" data-name="{{$product->name}}" onclick="addItem({{$product->id}})" id="item{{$product->id}}">
+                                <div class="square bg img" style="background-image: url('{{asset('public/images/products/'.$product->picture)}}');">
+                                    <div class="content">
+                                        {{$product->name}}
+                                        <br>N{{$product->price}}
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+
+
                     <div class="col-md-7" style="float: right;">
                         <form action="{{ route('update-invoice') }}" method="post" id="selecteditems">
                             @csrf
                             <input type="hidden" name="id" value="{{$trans->id}}">
+                            <input type="hidden" name="old_deliveryfee" value="{{$trans->delivery ? $trans->delivery->amount : 0}}">
                             <table class="table" id="itemlist">
                                 <thead>
                                     <tr class="spechead">
@@ -96,7 +111,7 @@
                                             <input id='item{{$pr->product_id}}' type='hidden' name='product_id[]' class='form-control' value='{{$pr->product_id}}' readonly>
                                             <h5 id='itname{{$pr->product->id}}'>{{$pr->product->name}}</h5>
                                             <small><i>(Stock: {{$pr->product->stock->quantity}})</i></small>
-                                        </td><td class='form-group'><input id='qty{{$pr->product_id}}'  onchange='changeQty({{$pr->product_id}})' type='number' value='1' name='qty[]' class='form-control quantity'><span><small>{{$pr->product->measurement_unit}}</small></span></td><td class='form-group'><input id='unit{{$pr->product_id}}' type='number' onchange='changeUc({{$pr->product_id}})' name='unit[]'  value='{{$pr->product->price}}' class='form-control'></td><td class='form-group'><input id='amount{{$pr->product_id}}' type='number' name='amount[]'  value='{{$pr->product->price}}' class='form-control amount' readonly></td><td class='form-group'><a href='#' class='badge badge-danger removeitem' id='re{{$pr->product_id}}'>X</a></td>
+                                        </td><td class='form-group'><input id='qty{{$pr->product_id}}'  onchange='changeQty({{$pr->product_id}})' type='number' value='{{$pr->quantity}}' name='qty[]' class='form-control quantity numberInput'><span><small>{{$pr->product->measurement_unit}}</small></span></td><td class='form-group'><input id='unit{{$pr->product_id}}' type='text' onchange='changeUc({{$pr->product_id}})' name='unit[]'  value='{{$pr->price}}' class='form-control numberInput'></td><td class='form-group'><input id='amount{{$pr->product_id}}' type='text' name='amount[]'  value='{{$pr->amount_paid}}' class='form-control amount numberInput' readonly></td><td class='form-group'><a href='#' class='badge badge-danger removeitem' id='re{{$pr->product_id}}'>X</a></td>
                                     </tr>
                                     @endforeach
 
@@ -114,11 +129,11 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><input type="number" class="form-control" value="{{$trans->amount+$trans->balance}}" id="total_due" name="total_due" readonly></td>
-                                        <td><input type="number" class="form-control" value="{{$trans->amount}}" id="amount_paid" name="amount_paid"></td>
-                                        <td><input type="number" class="form-control" value="{{$trans->discount}}" id="discount" name="discount"></td>
-                                        <td><input type="number" class="form-control" value="{{$trans->vat}}" step="0.01" id="tax" name="tax"></td>
-                                        <td><input type="number" class="form-control" value="{{$trans->vat/($trans->amount+$trans->balance)*100}}" step="0.01" id="tax_percent" name="tax_percent"></td>
+                                        <td><input type="text" class="form-control" value="{{$trans->amount}}" id="total_due" name="total_due" readonly></td>
+                                        <td><input type="text" class="form-control" value="{{$trans->amount-$trans->balance}}" id="amount_paid" name="amount_paid"></td>
+                                        <td><input type="text" class="form-control" value="{{$trans->discount}}" id="discount" name="discount"></td>
+                                        <td><input type="text" class="form-control" value="{{$trans->vat}}" step="0.01" id="tax" name="tax"></td>
+                                        <td><input type="number" class="form-control" value="{{number_format(($trans->vat/($trans->amount+$trans->balance)*100),2)}}" step="0.01" id="tax_percent" name="tax_percent"></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2"><input type="text" class="form-control" name="details" placeholder="details e.g. on credit" value="{{$trans->detail}}"></td>
@@ -133,13 +148,12 @@
 
                             <div class="row">
                                 <div class="form-group col-md-8" style="margin-top: 20px;">
-                                    <input type="hidden" name="buyer" id="buyer" value="{{$trans->from}}">
-                                            <input list="customers" class="form-control" name="customer" id="customer" placeholder="Customer Name" value="{{$trans->customer->name}}">
-                                            <datalist id="customers">
+                                            <select id="customer" name="customer" class="form-control">
+                                                <option value="{{$trans->from}}" selected>{{$trans->customer->name}}</option>
                                                 @foreach ($settings->personnel->where('category','Customer') as $cus)
-                                                    <option value="{{$cus->name}}">{{$cus->id}}</option>
+                                                    <option value="{{$cus->id}}">{{$cus->name}}</option>
                                                 @endforeach
-                                            </datalist>
+                                            </select>
                                 </div>
 
                                 <div class="form-group col-md-4" style="margin-top: 20px;">
@@ -156,7 +170,7 @@
                                 <div class="row">
                                     @if ($trans->payment_status=="Proforma")
                                         <div class="form-group col-md-4" style="margin-top: 20px;">
-                                            <select class="form-control" name="convert" id="convert">
+                                            <select class="form-control" name="convert">
                                                 <option value="" selected>Convert to Invoice?</option>
                                                 <option value="Yes">Yes, Make Invoice</option>
                                                 <option value="No">Proforma</option>
@@ -167,10 +181,22 @@
 
 
 
-                                    <div class="form-group col-md-6" style="float: right !important; margin-top: 20px;">
-                                        <button type="submit" class="btn btn-primary">
-                                            {{ __('Update') }}
-                                        </button>
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="add_delivery">Add Delivery? </label>
+                                            <input type="checkbox" value="Yes" name="add_delivery" id="add_delivery">
+                                        </div>
+
+                                        <div class="form-group col-md-3" id="dfee">
+                                            <label for="delivery_fee">Delivery Fee: </label>
+                                            <input type="delivery_fee" value="0" name="delivery_fee" class="form-control">
+                                        </div>
+
+                                        <div class="form-group col-md-6" style="float: right !important; margin-top: 20px;">
+                                            <button type="submit" class="btn btn-primary">
+                                                {{ __('Update') }}
+                                            </button>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -180,18 +206,6 @@
                         </form>
                     </div>
 
-                    <div class="col-md-5">
-                        @foreach ($products as $product)
-                            <a href="#" data-pid="{{$product->id}}" data-munit="{{$product->measurement_unit}}"  data-price="{{$product->price}}" data-in_stock="{{$product->stock->quantity}}" data-name="{{$product->name}}" onclick="addItem({{$product->id}})" id="item{{$product->id}}">
-                                <div class="square bg img" style="background-image: url('{{asset('public/images/products/'.$product->picture)}}');">
-                                    <div class="content">
-                                        {{$product->name}}
-                                        <br>N{{$product->price}}
-                                    </div>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
 
 
                 </div>

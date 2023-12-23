@@ -45,12 +45,10 @@
 
 			<div class="vertical-align-middle">
                     <div class="content">
-                        <div style="text-align: center;">
-                            <img  src="{{asset('/public/images/'.$settings->logo)}}" class="img-responsive logo" style="height: auto !important; width: 120px; position: relative; padding: 0px;"></div>
+                        <div style="text-align: center; margin-top: -30px;">
+                            <img  src="{{asset('/public/images/topImage.jpg')}}" width="100%" height="auto"></div>
 
-                        <h3 class="page-title" style="width: 80%; margin-left: 10%; font-weight: bold; text-align: center;">{{$settings->business_name}}<br><small style="font-size: 9px;"><b>Address: </b>{{$settings->address}}</small></h3>
 
-                        <hr>
 
                             <!-----------------------------START YIELD PAGE CONTENT -->
                             @yield('content')

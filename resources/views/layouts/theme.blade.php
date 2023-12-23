@@ -1278,6 +1278,7 @@
 
             $("#1").clone().attr('id',new_class).appendTo("#item_list");
             $("#"+new_class +" a").prop('id',"re"+new_class);
+            reCalc();
 
             // $("table tbody#item_list").append("<tr scope='row' class='row"+new_class+"'><td class='input-field'><input type='text' name='property[]' value='' placeholder='e.g. Color, Brand etc'></td><td class='input-field'><td class='input-field'><input type='text' name='value[]' value='' placeholder='e.g. Red, HP etc'></td><td><a href='#' class='btn-floating red btn-small delpos' onClick='delRow("+new_class+")'><i class='small material-icons'>remove</i></a></td></tr>");
 
@@ -1328,6 +1329,16 @@
                 $("#customer_form").show();
             }else{
                 $("#customer_form").hide();
+            }
+        });
+
+        $("#dfee").hide();
+        $("#add_delivery:checkbox").click(function(event) {
+
+            if ($(this).is(":checked")){
+                $("#dfee").show();
+            }else{
+                $("#dfee").hide();
             }
         });
 

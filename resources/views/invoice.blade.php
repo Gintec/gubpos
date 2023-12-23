@@ -1,20 +1,27 @@
 @extends('layouts.print-theme')
+<style>
+    th, td {
+        padding: 4px !important;
+    }
 
+</style>
 @section('content')
     @php
         $locale = 'en_US';
         $fmt = numfmt_create($locale, NumberFormatter::SPELLOUT);
     @endphp
-    <h4 class="page-title" style="font-weight: bold; text-align: center;">{{ucwords($category)}} No.: {{strtoupper($sale->reference_no)}} </h4>
-    <div class="justify-content-end">
-        <small style="color: green"><i>{{$sale->pay_status}}</i></small>
-    </div>
-    <div class="row" style="margin: 10px auto;">
 
+            <h4 style="margin-left: 42%; color: white; background-color: darkBlue; width: 80px; padding: 5px; font-weight: bold; text-align: center;">
+                {{ucwords($category)}}
+            </h4>
+
+        <small style="float: right; font-weight: bold;">{{ucwords($category)}} No.: {{strtoupper($sale->reference_no)}} | <i style="color: green"> {{$sale->payment_status}}</i></small>
+
+    <div class="row" style="margin-top: -10px;">
             <div class="panel">
                 <div class="panel-body">
                     <h4>Customer Detail</h4>
-                    <table class="table responsive-table">
+                    <table border="1" style="width: 100%">
                         <thead>
                             <tr>
                                 <th colspan="2">Name: {{$customer->name}}</th>
@@ -36,9 +43,9 @@
                     <hr>
 
                     <h4>Products Details</h4>
-                    <table class="table responsive-table table-striped" style="padding: 0px;">
+                    <table border="1" style="width: 100%">
                         <thead>
-                            <tr style="color: ">
+                            <tr>
                                 <th>Description</th>
                                 <th>Quantity</th>
                                 <th>Unit Rate</th>
@@ -50,26 +57,35 @@
                                 <tr>
                                     <td>{{$pr->product->type}} {{$pr->product->name}}</td>
                                     <td>{{$pr->quantity}}</td>
-                                    <td>{{$pr->price}}</td>
-                                    <td>{{$pr->amount_paid}}</td>
-                                    <td>{{$pr->dated}}</td>
+                                    <td>{{number_format($pr->price,2)}}</td>
+                                    <td>{{number_format($pr->amount_paid,2)}}</td>
                                 </tr>
                             @endforeach
                             <tr>
-                                <td colspan="3" style="text-align: right;">Vat:</td><td>{{$sale->vat}}</td>
+                                <td colspan="3" style="text-align: right;">Vat:</td><td>{{number_format($sale->vat,2)}}</td>
                             </tr>
+                            @if ($sale->discount>0)
+                                <tr>
+                                    <td colspan="3" style="text-align: right;">Discount:</td><td>{{number_format($sale->discount,2)}}</td>
+                                </tr>
+                            @endif
+                            @if ($sale->balance>0)
+                                <tr>
+                                    <td colspan="3" style="text-align: right;">Balance:</td><td>{{number_format($sale->balance,2)}}</td>
+                                </tr>
+                            @endif
+
+                            @if (isset($sale->delivery) && $sale->delivery->amount>0)
+                                <tr>
+                                    <td colspan="3" style="text-align: right;">Delivery Fee:</td><td>{{number_format($sale->delivery->amount,2)}}</td>
+                                </tr>
+                            @endif
                             <tr>
-                                <td colspan="3" style="text-align: right;">Discount:</td><td>{{$sale->discount}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" style="text-align: right;">Balance:</td><td>{{$sale->balance}}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
+                                <td colspan="3" style="text-align: right; font-weight:bold;">
                                     Total Amount:
                                 </td>
-                                <td>
-                                    {{$sale->amount}}
+                                <td style="font-weight:bold;">
+                                    {{number_format($sale->amount,2)}}
                                 </td>
 
                             </tr>

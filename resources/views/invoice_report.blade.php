@@ -7,23 +7,8 @@
     <div class="row">
             <div class="panel" style="width:100%">
                 <div class="panel-body">
-                    <div class="row">
-                        <form action="{{route('generateInvoiceReport')}}" method="post">
-                            @csrf
 
-                                <div style="text-align: center">
-                                    <h4 colspan="3">Generate transaction report for a period</h4>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3"></div>
-                                    <div class="form-group col-md-2"><input type="text" class="form-control datepicker" name="from" placeholder="From"></div>
-                                    <div class="form-group col-md-2"><input type="text" class="form-control datepicker" name="to" placeholder="To"></div>
-                                    <div class="form-group col-md-2"><input type="submit" value="Generate" class="btn btn-primary"></div>
-                                </div>
-
-                        </form>
-                    </div>
-
+                        <h3>Invoice Report From: {{$from}} To: {{$to}}</h3>
                         <table class="table  responsive-table" style="width: 100%; position: relative" id="products">
                         <thead>
                             <tr>
@@ -49,7 +34,6 @@
 
                                     <td>{{is_numeric($transact->recorded_by)?$users->where('id',$transact->recorded_by)->first()->name:$transact->recorded_by}}</td>
                                     <td>
-
                                             <a href="{{url('/invoice/invoice/'.$transact->id)}}" target="_blank" class="label label-success">Invoice</a>
                                             <a href="{{url('/invoice/receipt/'.$transact->id)}}" target="_blank" class="label label-warning">Reciept</a>
                                             <a href="{{url('/edit-invoice/'.$transact->id)}}" target="_blank" class="label label-primary">Edit</a>
@@ -57,19 +41,12 @@
 
                                         <a href="{{url('/delete-trans/'.$transact->id)}}" class="label label-danger Super"  onclick="return confirm('Are you sure you want to delete {{$transact->title}}\'s Financial Record?')">Delete</a>
                                     </td>
-
                                 </tr>
                             @endforeach
-
-
                         </tbody>
                     </table>
-                    <div style="text-align: right">
-                        {{$transactions->links("pagination::bootstrap-4")}}
-                    </div>
                 </div>
             </div>
-
     </div>
 
 @endsection

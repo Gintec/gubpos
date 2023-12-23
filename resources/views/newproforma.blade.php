@@ -72,6 +72,18 @@
             <div class="panel">
 
                 <div class="panel-body">
+                    <div class="col-md-4">
+                        @foreach ($products as $product)
+                            <a href="#" data-pid="{{$product->id}}" data-munit="{{$product->measurement_unit}}"  data-price="{{$product->price}}" data-in_stock="{{$product->stock->quantity}}" data-name="{{$product->name}}" onclick="addItem({{$product->id}})" id="item{{$product->id}}">
+                                <div class="square bg img" style="background-image: url('{{asset('public/images/products/'.$product->picture)}}');">
+                                    <div class="content">
+                                        {{$product->name}}
+                                        <br>N{{$product->price}}
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
 
                     <div class="col-md-8" style="float: right;">
                         <form action="{{ route('addproforma') }}" method="post" id="selecteditems">
@@ -163,29 +175,27 @@
 
                             </div>
 
+                            <div class="row">
+                                <div class="form-group col-md-3">
+                                    <label for="add_delivery">Add Delivery? </label>
+                                    <input type="checkbox" value="Yes" name="add_delivery" id="add_delivery">
+                                </div>
+
+                                <div class="form-group col-md-3" id="dfee">
+                                    <label for="delivery_fee">Delivery Fee: </label>
+                                    <input type="delivery_fee" value="0" name="delivery_fee" class="form-control">
+                                </div>
+
                                 <div class="form-group col-md-6" style="float: right !important; margin-top: 20px;">
                                     <button type="submit" class="btn btn-primary">
                                         {{ __('Create Proforma') }}
                                     </button>
                                 </div>
+                            </div>
 
 
                         </form>
                     </div>
-
-                    <div class="col-md-4">
-                        @foreach ($products as $product)
-                            <a href="#" data-pid="{{$product->id}}" data-munit="{{$product->measurement_unit}}"  data-price="{{$product->price}}" data-in_stock="{{$product->stock->quantity}}" data-name="{{$product->name}}" onclick="addItem({{$product->id}})" id="item{{$product->id}}">
-                                <div class="square bg img" style="background-image: url('{{asset('public/images/products/'.$product->picture)}}');">
-                                    <div class="content">
-                                        {{$product->name}}
-                                        <br>N{{$product->price}}
-                                    </div>
-                                </div>
-                            </a>
-                        @endforeach
-                    </div>
-
 
                 </div>
             </div>

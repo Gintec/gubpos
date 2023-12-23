@@ -21,6 +21,11 @@ class transactions extends Model
         return $this->hasOne(accountheads::class, 'id', 'account_head');
     }
 
+    public function delivery()
+    {
+        return $this->hasOne(delivery::class, 'invoice_no', 'id');
+    }
+
     public function customer()
     {
         return $this->hasOne(User::class, 'id', 'from');

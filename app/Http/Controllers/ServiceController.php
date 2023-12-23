@@ -7,6 +7,8 @@ use App\Models\Service;
 use App\Models\User;
 use App\Models\categories;
 use App\Models\transactions;
+use App\Models\spareparts;
+use App\Models\sstock;
 
 class ServiceController extends Controller
 {
@@ -19,9 +21,9 @@ class ServiceController extends Controller
     public function create()
     {
         $users = User::all();
-        $categories = categories::select('title')->get();
-
-        return view('new-service', compact('users','categories'));
+        $categories = categories::select('category_group','title','id')->get();
+        $spareparts = spareparts::all();
+        return view('new-service', compact('users','categories','spareparts'));
     }
 
     public function store(Request $request){

@@ -129,6 +129,9 @@ Route::post('/addproforma', [App\Http\Controllers\ProductSalesController::class,
 Route::get('/edit-invoice/{tid}', [App\Http\Controllers\ProductSalesController::class, 'editInvoice'])->name('edit-invoice')->middleware('role:Finance,Admin,Super,Staff');
 
 
+// REPORTS
+Route::post('generateInvoiceReport', [App\Http\Controllers\ProductSalesController::class, 'generateInvoiceReport'])->name('generateInvoiceReport')->middleware('role:Admin,Staff,Super');
+
 
 // SERVICES
 Route::get('/services', [App\Http\Controllers\ServiceController::class,'index'])->name('services');
