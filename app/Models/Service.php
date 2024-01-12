@@ -15,4 +15,14 @@ class Service extends Model
     {
         return $this->hasOne(User::class, 'id', 'customer');
     }
+
+    public function parts()
+    {
+        return $this->hasMany(serviceparts::class, 'service_id', 'id');
+    }
+
+    public function questions()
+    {
+        return $this->hasMany(servicequestions::class, 'service_id', 'id');
+    }
 }

@@ -21,9 +21,10 @@
 	<!-- ICONS -->
 	<link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/img/apple-icon.png') }}">
 	<link rel="icon" type="{{ asset('image/png" sizes="96x96" href="assets/img/favicon.png') }}">
-
+    <link rel="stylesheet" href="{{ asset('/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{asset('/css/jquery.dataTables.min.css')}}">
     <link rel="stylesheet" href="{{asset('https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css')}}">
+
 	<style>
 		.brand{
 			padding: 10px 5px 5px 10px !important;
@@ -192,7 +193,7 @@
                                     <ul class="nav">
                                         <li><a href="{{ url('/new_service')}}" class="roledlink Admin Super Staff">New Service</a></li>
                                         <li><a href="{{ url('/services')}}" class="roledlink Admin Super Staff">All Service Records</a></li>
-
+                                        <li><a href="{{ url('/deliveries')}}" class="roledlink Admin Super Staff">Delivery Notes</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -203,7 +204,9 @@
                                 <div id="subPages4" class="collapse ">
                                     <ul class="nav">
                                         <li><a href="{{ url('/products')}}" class="">Product List</a></li>
+                                        <li><a href="{{ url('/spareparts')}}" class="">List of Accessories/Parts</a></li>
                                         <li><a href="{{ url('/psupplies')}}" class="">Supplied Products</a></li>
+                                        <li><a href="{{ url('/sparepartSupplies')}}" class="">Supplied Accessories/Parts</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -313,8 +316,7 @@
 	<script src="{{asset('/assets/scripts/klorofil-common.js')}}"></script>
 	<script src="{{asset('/assets/jquery-ui/jquery-ui.min.js')}}"></script>
 	<script src="{{asset('/assets/vendor/bootstrap/js/bootstrap.min.js')}}"></script>
-
-
+    <script src="{{asset('/js/select2.min.js')}}"></script>
 </body>
 
 </html>
@@ -1140,10 +1142,11 @@
             $("#amount"+clicked).val(new_amount);
             reCalc();
         }
-
-        $(document).on('input','.form-control',function(event){
-            reCalc();
-        });
+        @if (isset($pagename) && $pagename=="newsales")
+            $(document).on('input','.form-control',function(event){
+                reCalc();
+            });
+        @endif
 
         function changeUc(clicked){
             // RECALCULATE AMOUNT OF ONE ITEM ON QUANTITY CHANGE
@@ -1356,6 +1359,31 @@
         function addCommas(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
+
+        // $('.select2').select2({
+        //         placeholder: 'Search products'
+        //     });
+
+        $('.add-product').click(function() {
+
+            // if ($('select').data('select2')) {
+            //     $('select').select2('destroy');
+            //     $('.select2').select2('destroy');
+            //     // Unbind the event
+            //     $('.select2').off('select2:select');
+            // }
+
+            var newSelect = $('#product-select2').clone();
+            // newSelect.attr('id', 'product-select-' + new Date().getTime());
+            // newSelect.select2({
+            //     placeholder: 'Search products'
+            // });
+            // newSelect.val(''); // Clear selected value
+            $(".product-select").append("<hr>");
+            $(".product-select").append(newSelect);
+           //  $('.select2').select2();
+        });
+
 	</script>
 
 

@@ -19,7 +19,17 @@ class delivery extends Model
 
     public function transaction()
     {
-        return $this->belongsTo(transactions::class, 'id', 'invoice_no');
+        return $this->hasOne(transactions::class, 'id', 'invoice_no');
+    }
+
+    public function Customer()
+    {
+        return $this->hasOne(User::class, 'id', 'customer');
+    }
+
+    public function DeliveredBy()
+    {
+        return $this->hasOne(User::class, 'id', 'deliveredBy');
     }
 
 

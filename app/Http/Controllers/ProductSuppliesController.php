@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\product_supplies;
 use App\Models\product_stocks;
+use App\Models\sstock;
+use App\Models\servicepartsupplies;
 use Illuminate\Http\Request;
 
 class ProductSuppliesController extends Controller
@@ -17,6 +19,12 @@ class ProductSuppliesController extends Controller
     {
         $psupplies = product_supplies::paginate(50);
         return view('psupplies', compact('psupplies'));
+    }
+
+    public function sparepartSupplies()
+    {
+        $supplies = servicepartsupplies::paginate(50);
+        return view('ssupplies', compact('supplies'));
     }
 
     /**
@@ -67,6 +75,22 @@ class ProductSuppliesController extends Controller
 
     }
 
+    public function sSupplies(Request $request){
+        sstock::updateOrCreate(['id'=>$request->spart_id],[
+            'id'=>$request->spart_id
+        ])->increment('quantity',$request->quantity);
+
+        servicepartsupplies::create([
+            'part_id' => $request->spart_id,
+            'supplier' => $request->supplier_id,
+            'quantity' => $request->quantity,
+            'date_supplied' => $request->date_supplied,
+            'batchno' => $request->batchno,
+            'recorded_by' => auth()->user()->name
+        ]);
+
+        return redirect()->back()->with(['message'=>'Supply added to sparepart stock']);
+    }
     /**
      * Display the specified resource.
      *

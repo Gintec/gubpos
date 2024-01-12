@@ -12,6 +12,29 @@
                         </div>
                 </div>
                 <div class="panel-body">
+                    <form action="{{route('searchSales')}}" method="post">
+                        @csrf
+                        <table class="table" style="width: 50%; margin: 10px auto;">
+                            <thead>
+                               <tr>
+                                <th colspan="3" style="text-align: center">
+                                    Filter/Generate Sales Report
+                                </th>
+                               </tr>
+                            </thead>
+                            <tr class="form-group">
+                                <td>
+                                    <input type="text" class="form-control datepicker" name="filter_from" placeholder="From" required>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control datepicker" name="filter_to" placeholder="From" required>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary">Search</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
                     <table class="table responsive-table" id="products" style="width: 100%;">
                         <thead>
                             <tr style="color: ">

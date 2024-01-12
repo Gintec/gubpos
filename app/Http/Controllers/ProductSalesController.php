@@ -29,6 +29,22 @@ class ProductSalesController extends Controller
         return view('sales', compact('sales'));
     }
 
+    public function searchSales(Request $request){
+        // Validate the incoming request data
+        $request->validate([
+            'filter_from' => 'required|date',
+            'filter_to' => 'required|date|after_or_equal:filter_from',
+        ]);
+
+        // Retrieve sales data within the specified date range
+        $sales = product_sales::whereBetween('dated_sold', [$request->filter_from, $request->filter_to])->paginate(50);
+
+        // Pass the results to the view
+        return view('sales', ['sales' => $sales]);
+
+        // $sales = product_sales::where('pay_status','!=','Proforma')->paginate(50);
+        // return view('sales', compact('sales'));
+    }
     public function invoices()
     {
         $transactions = transactions::where('account_head',1)->orderBy('id','desc')->paginate(50);
@@ -393,7 +409,12 @@ class ProductSalesController extends Controller
 
     public function sale()
     {
-        $lastInvoiceNo = transactions::select('id','reference_no')->where('payment_status','!=','Proforma')->orderBy('id','desc')->first()->reference_no;
+        $lastInvoice = transactions::select('id','reference_no')->where('payment_status','!=','Proforma')->orderBy('id','desc')->first();
+        if(!empty($lastInvoice)){
+            $lastInvoiceNo = $lastInvoice->reference_no;
+        }else{
+            $lastInvoiceNo = 0;
+        }
         $products = products::select('id','name','price','picture','measurement_unit')->get();
         return view('newsales', compact('products','lastInvoiceNo'));
     }
@@ -419,7 +440,7 @@ class ProductSalesController extends Controller
             $customer = User::where('id', $sale->from)->first();
             $title = strtoupper($category);
             $pdf_doc = PDF::loadView('invoice', compact('sale', 'products', 'customer', 'category','title'))
-                ->setOptions(['defaultFont' => 'sans-serif', 'isRemoteEnabled' => true]);
+                ->setOptions(['defaultFont' => 'DejaVuSans', 'isRemoteEnabled' => true]);
 
             // Get the path to the public directory and create the pdf folder if it doesn't exist
             $pdfDirectory = public_path('pdf');
@@ -457,7 +478,7 @@ class ProductSalesController extends Controller
             $customer = User::where('id', $sale->from)->first();
             $title = strtoupper($category);
             $pdf_doc = PDF::loadView('invoice', compact('sale', 'products', 'customer', 'category','title'))
-                ->setOptions(['defaultFont' => 'sans-serif', 'isRemoteEnabled' => true]);
+                ->setOptions(['defaultFont' => 'DejaVuSans', 'isRemoteEnabled' => true]);
 
             // Get the path to the public directory and create the pdf folder if it doesn't exist
             $pdfDirectory = public_path('pdf');
@@ -481,7 +502,7 @@ class ProductSalesController extends Controller
         $products = product_sales::where('group_id',$sale->reference_no)->get();
         $customer = User::where('id',$sale->from)->first();
         $title = strtoupper($category);
-        $pdf_doc = PDF::loadView('invoice', compact('sale','products','customer','category','title'))->setOptions(['defaultFont' => 'sans-serif','isRemoteEnabled'=>true,]);
+        $pdf_doc = PDF::loadView('invoice', compact('sale','products','customer','category','title'))->setOptions(['defaultFont' => 'DejaVuSans','isRemoteEnabled'=>true,]);
 
         // Get the path to the public directory and create the pdf folder if it doesn't exist
         $pdfDirectory = public_path('pdf');
@@ -509,7 +530,24 @@ class ProductSalesController extends Controller
         return redirect()->back()->with(['message'=>ucwords($category).' Sent successfully!']);
     }
 
+    public function deliveries(){
+        $deliveries = delivery::all();
+        $deliverymen = User::select('id','name','about')->where('category','Delivery')->get();
+        return view('deliveries',compact('deliveries','deliverymen'));
+    }
 
+    public function saveDelivery(Request $request){
+        delivery::updateOrCreate(['id'=>$request->id],[
+            'delivery_date'=>$request->delivery_date,
+            'status'=>$request->status,
+            'deliveredBy'=>$request->delivered_by,
+            'details'=>$request->details,
+        ]);
+
+        $message = "Delivery record saved Successful";
+        return redirect()->back()->with(['message'=>$message]);
+
+    }
     /**
      * Display the specified resource.
      *

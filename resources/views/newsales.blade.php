@@ -49,7 +49,7 @@
 
 </style>
 @section('content')
-    @php $modal="production_jobs"; $pagename = "production_jobs"; @endphp
+    @php $pagename = "newsales"; @endphp
 
     @if(Session::get('tid'))
         @php
@@ -61,6 +61,9 @@
             </div>
             <div class="col-md-3 col-md-offset-2">
                 <a href="{{url('new-invoice/receipt/'.$tid)}}" class="btn btn-primary" target="_blank">Print Receipt</a>
+            </div>
+            <div class="col-md-3 col-md-offset-2">
+                <a href="{{url('invoice/delivery/'.$tid)}}" class="btn btn-primary" target="_blank">Delivery Note</a>
             </div>
         </div>
         <hr>

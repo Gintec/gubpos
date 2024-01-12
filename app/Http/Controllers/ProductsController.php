@@ -8,6 +8,7 @@ use App\Models\finished_products;
 use App\Models\product_sales;
 use App\Models\product_damages;
 use App\Models\product_supplies;
+use App\Models\spareparts;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
@@ -21,6 +22,12 @@ class ProductsController extends Controller
     {
         $products = products::paginate(50);
         return view('products', compact('products'));
+    }
+
+    public function spareparts()
+    {
+        $spareparts = spareparts::get();
+        return view('spareparts', compact('spareparts'));
     }
 
     public function damages()

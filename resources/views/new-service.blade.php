@@ -11,15 +11,15 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row">
-                            <h3>Basic Questions</h3>
+                            <h3>Technical Questions</h3>
                                 <table class="table table-striped">
                                     <tr>
-                                        <th>Part Name/Answer</th>
+                                        <th>Compulsory service questions</th>
                                     </tr>
                                 @foreach ($categories->where('category_group','Technical Questions') as $question)
                                     <tr>
                                         <td>{{$question->title}} <br>
-                                        <input type="text" class="form-control" name="answer{{$question->id}}"></td>
+                                        <input type="text" class="form-control" name="answer{{$question->id}}" value="{{$question->description}}"></td>
                                     </tr>
                                 @endforeach
                                 </table>
@@ -38,7 +38,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="category">Service Category:</label>
                                     <select class="form-control" name="category" id="category">
-                                        @foreach ($categories as $cat)
+                                        @foreach ($categories->where('category_group','Service Category') as $cat)
                                             <option value="{{$cat->title}}">{{$cat->title}}</option>
                                         @endforeach
 
@@ -59,16 +59,11 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <label for="description">Customer's Request:</label>
+                                <label for="description">Customer's Request/Service to Offer:</label>
                                 <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <label for="description">Service to Render:</label>
-                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                            </div>
-                        </div>
+
 
                         <div class="row">
                             <div class="form-group col-md-6">
@@ -103,19 +98,33 @@
                     </div>
                     <div class="col-md-6">
                         <h3>Select Spare-parts and Quantities</h3>
-                        <table border="1">
-                            <tr>
-                                <th style="width: 80% !important">Part Name</th>
-                                <th style="width: 20% !important">Quantity</th>
-                            </tr>
-                        @foreach ($spareparts as $spare)
-                            <tr>
-                                <td>{{$spare->spareparts}}</td>
-                                <td><input type="number" name="quantity{{$spare->id}}" value="0"></td>
-                            </tr>
-                        @endforeach
-                        </table>
+                        <div class="product-select">
+                            <div id="product-select2" class="row">
+                                <div class="col-md-8">
+                                    <select class="select2 form-control" name="sparepart[]">
+                                        <option value="0" selected>Select a Sparepart</option>
+                                        @foreach ($spareparts as $spare)
+                                            <option value="{{$spare->id}}">{{$spare->spareparts}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="number" class="quantity form-control" name="quantity[]" value="1" min="1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="#" class="add-product btn btn-primary">Add Another Part</a>
+
+                        <div class="row">
+                            <div class="form-group" style="text-align: center">
+                                <label for="takenparts">Have this Parts been taken from the stock?</label>
+                                <input type="checkbox" name="takenparts" id="takenparts" value="Yes">
+                            </div>
+                        </div>
+
                     </div>
+
                 </div>
 
 

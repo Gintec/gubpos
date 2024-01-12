@@ -107,6 +107,7 @@ Route::get('/products', [App\Http\Controllers\ProductsController::class, 'index'
 Route::post('/addproduct', [App\Http\Controllers\ProductsController::class, 'store'])->name('addproduct')->middleware('role:Finance,Admin,Super');
 Route::get('/delete-prd/{id}', [App\Http\Controllers\ProductsController::class, 'destroy'])->name('delete-prd')->middleware('role:Super');
 Route::get('/product/{id}', [App\Http\Controllers\ProductsController::class, 'product'])->name('product')->middleware('role:Super');
+Route::get('/spareparts', [App\Http\Controllers\ProductsController::class, 'spareparts'])->name('spareparts')->middleware('role:Finance,Admin,Super');
 
 // PRODUCT SALES
 Route::get('/sales', [App\Http\Controllers\ProductSalesController::class, 'index'])->name('sales')->middleware('role:Finance,Admin,Super,Staff');
@@ -127,6 +128,14 @@ Route::get('/newproforma', [App\Http\Controllers\ProductSalesController::class, 
 Route::post('/addproforma', [App\Http\Controllers\ProductSalesController::class, 'addproforma'])->name('addproforma')->middleware('role:Finance,Admin,Super,Staff');
 
 Route::get('/edit-invoice/{tid}', [App\Http\Controllers\ProductSalesController::class, 'editInvoice'])->name('edit-invoice')->middleware('role:Finance,Admin,Super,Staff');
+Route::post('searchSales', [App\Http\Controllers\ProductSalesController::class, 'searchSales'])->name('searchSales')->middleware('role:Finance,Admin,Super,Staff');
+Route::post('sSupplies', [App\Http\Controllers\ProductSuppliesController::class, 'sSupplies'])->name('sSupplies')->middleware('role:Finance,Admin,Super,Staff');
+Route::get('sparepartSupplies', [App\Http\Controllers\ProductSuppliesController::class, 'sparepartSupplies'])->name('sparepartSupplies')->middleware('role:Finance,Admin,Super,Staff');
+
+// DELIVERIES
+Route::get('deliveries', [App\Http\Controllers\ProductSalesController::class, 'deliveries'])->name('deliveries')->middleware('role:Finance,Admin,Super,Staff');
+Route::post('saveDelivery', [App\Http\Controllers\ProductSalesController::class, 'saveDelivery'])->name('saveDelivery')->middleware('role:Finance,Admin,Super,Staff');
+
 
 
 // REPORTS
@@ -168,6 +177,9 @@ Route::get('/delete-prog/{id}', [App\Http\Controllers\ProgrammesController::clas
 Route::get('/communications', [App\Http\Controllers\HomeController::class, 'communications'])->name('communications')->middleware('role:Admin,Super,Staff');
 Route::post('/sendsms', [App\Http\Controllers\HomeController::class, 'sendSMS'])->name('sendsms')->middleware('role:Admin,Super,Staff');
 Route::get('/sentmessages', [App\Http\Controllers\HomeController::class, 'sentSMS'])->name('sentmessages')->middleware('role:Admin,Super,Staff');
+
+
+Route::get('/get-products', [App\Http\Controllers\ServiceController::class,'getProducts']);
 
 // ARTISAN COMMANDS
 Route::get('/artisan1/{command}', [App\Http\Controllers\HomeController::class, 'Artisan1']);
