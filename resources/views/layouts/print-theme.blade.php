@@ -45,9 +45,10 @@
 
 			<div class="vertical-align-middle">
                     <div class="content">
-                        <div style="text-align: center; margin-top: -30px;">
-                            <img  src="{{asset('/public/images/topImage.jpg')}}" width="100%" height="auto"></div>
-
+                        <div style="text-align: center; margin-top: -60px;">
+                            <img  src="{{asset('/public/images/topImage.jpg')}}" width="15%" height="auto">
+                            <img  src="{{asset('/public/images/topImageB.jpg')}}" width="100%" height="auto">
+                        </div>
 
 
                             <!-----------------------------START YIELD PAGE CONTENT -->

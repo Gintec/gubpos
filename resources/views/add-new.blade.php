@@ -97,6 +97,7 @@
                                                 <option value="Customer">Customer</option>
                                                 <option value="Staff">Staff</option>
                                                 <option value="Distributor">Distributor</option>
+                                                <option value="Contractor">Contractor</option>
                                             </select>
                                         </div>
                                     </div>
@@ -108,6 +109,7 @@
                                             <select class="form-control" name="status" id="status">
                                                 <option value="Status" selected>Status</option>
                                                 <option value="Staff">Staff</option>
+                                                <option value="Contractor">Contractor</option>
                                                 <option value="Customer">Customer</option>
                                                 <option value="New Customer">New Customer</option>
                                                 <option value="Lost Customer">Lost Customer</option>
@@ -159,6 +161,7 @@
                                                 <option value="Staff">Staff</option>
                                                 <option value="Distributor">Distributor</option>
                                                 <option value="Finance">Finance</option>
+                                                <option value="Contractor">Contractor</option>
                                                 @if ($settings->mode=="Maintenance")
                                                 <option value="Super">Super</option>
                                                 @endif

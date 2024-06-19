@@ -49,7 +49,7 @@
 
 </style>
 @section('content')
-    @php $modal="production_jobs"; $pagename = "production_jobs"; @endphp
+    @php $pagename = "newsales"; @endphp
 
     @if(Session::get('tid'))
         @php
@@ -72,7 +72,7 @@
             <div class="panel">
 
                 <div class="panel-body">
-                    <div class="col-md-4">
+                    <div class="col-md-4" style="overflow-y: scroll; min-height: 800px; height: 100%">
                         @foreach ($products as $product)
                             <a href="#" data-pid="{{$product->id}}" data-munit="{{$product->measurement_unit}}"  data-price="{{$product->price}}" data-in_stock="{{$product->stock->quantity}}" data-name="{{$product->name}}" onclick="addItem({{$product->id}})" id="item{{$product->id}}">
                                 <div class="square bg img" style="background-image: url('{{asset('public/images/products/'.$product->picture)}}');">
@@ -115,17 +115,17 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><input type="number" class="form-control numberInput" value="0" id="total_due" name="total_due" readonly></td>
-                                        <td><input type="number" class="form-control numberInput" value="0" id="amount_paid" name="amount_paid" readonly></td>
-                                        <td><input type="number" class="form-control numberInput" value="0" id="discount" name="discount" required></td>
-                                        <td><input type="number" class="form-control numberInput" value="0" step="0.01" id="tax" name="tax" required></td>
-                                        <td><input type="number" class="form-control numberInput" value="7.5" step="0.01" id="tax_percent" name="tax_percent" required></td>
+                                        <td><input type="text" class="form-control numberInput"  pattern="[0-9,]*" value="0" id="total_due" name="total_due" readonly></td>
+                                        <td><input type="text" class="form-control"  pattern="[0-9,]*" value="0" id="amount_paid" name="amount_paid" readonly></td>
+                                        <td><input type="text" class="form-control" value="0" id="discount" name="discount" required></td>
+                                        <td><input type="text" class="form-control numberInput" value="0" step="0.01" id="tax" name="tax" required></td>
+                                        <td><input type="number" class="form-control" value="7.5" step="0.01" id="tax_percent" name="tax_percent" required></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2"><input type="text" class="form-control" name="details" placeholder="details e.g. on credit"></td>
                                         <td><input type="text" class="form-control datepicker" value="{{date('Y-m-d')}}" name="dated_sold" placeholder="Date"></td>
                                         <td colspan="2">
-                                            <input type="text" name="group_id" id="group_id" placeholder="Invoice Number" class="form-control">
+                                            <input type="text" name="group_id" id="group_id" placeholder="Invoice Number" value="{{$lastInvoiceNo+1}}" class="form-control">
 
                                         </td>
                                     </tr>

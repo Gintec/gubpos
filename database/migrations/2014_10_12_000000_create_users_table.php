@@ -40,7 +40,7 @@ class CreateUsersTable extends Migration
                 'role' => 'Super',
                 'email'=> 'admin@prodsales.com',
                 'password'=>'$2y$10$dxyWNlqDIBLi2DWM8fFzbO76rNcHAQOz1GLQLTShUJikUF8dXccQq',
-                'setting_id'=>1
+                // 'setting_id'=>1
             ));
 
     }

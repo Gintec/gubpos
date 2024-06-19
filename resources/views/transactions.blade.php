@@ -1,11 +1,18 @@
 @extends('layouts.theme')
+<style>
+    th, td {
+        padding: 2px !important;
+        font-size: 12px !important;
+    }
+
+</style>
 
 @section('content')
     @php $pagetype="report"; $modal="accounthead"; @endphp
 
     <h3 class="page-title">Financial | <small style="color: green">Transactions</small></h3>
     <div class="row">
-            <div class="panel" style="width:100%">
+            <div class="panel" style="width:100% !important; position: relative;">
                 <div class="panel-heading" style="text-align: center">
 
                         <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#transaction"> <i class="fa fa-plus"></i> Add New</a>
@@ -13,20 +20,20 @@
 
                 </div>
                 <div class="panel-body">
-                    <table class="table  responsive-table" style="width: 100%; position: relative" id="products">
+                    <table class="table table-striped" style="width: 100%;" id="products">
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th>Title</th>
                                 <th>Amount</th>
+                                <th>Balance</th>
                                 <th>Account Head</th>
                                 <th>Date</th>
-                                <th>Ref. No</th>
+                                <th>Invoice No</th>
                                 <th>Detail</th>
-                                <th>From</th>
-                                <th>To</th>
-                                <th>Approved By</th>
-                                <th>Entered By</th>
-                                <th>Action</th>
+                                <th>From / To</th>
+                                <th>Approved By / Entered By</th>
+                                <th style="width: 10% !important;">Action</th>
 
                             </tr>
                         </thead>
@@ -34,32 +41,44 @@
                             @foreach ($transactions as $transact)
 
                                 <tr>
+                                    <td>{{$transact->id}}</td>
                                     <td>{{$transact->title}}</td>
                                     <td>{{number_format($transact->amount,2)}}</td>
-                                    <td>{{$transact->accounthead->title}}</td>
+                                    <td>{{number_format($transact->balance,2)}}</td>
+                                    <td>{{$transact->accounthead->title}} <br> <small><i>{{$transact->accounthead->category}}</i></small></td>
                                     <td>{{$transact->dated}}</td>
                                     <td>{{strtoupper($transact->reference_no)}}</td>
                                     <td>{{$transact->detail}}</td>
-                                    <td>{{is_numeric($transact->from)?$users->where('id',$transact->from)->first()->name:$transact->from}}</td>
-                                    <td>{{is_numeric($transact->to)?$users->where('id',$transact->to)->first()->name:$transact->to}}</td>
-                                    <td>{{is_numeric($transact->approved_by)?$users->where('id',$transact->approved_by)->first()->name:$transact->approved_by}}</td>
-                                    <td>{{is_numeric($transact->recorded_by)?$users->where('id',$transact->recorded_by)->first()->name:$transact->recorded_by}}</td>
+                                    <td>{{is_numeric($transact->from)?$users->where('id',$transact->from)->first()->name:$transact->from}} / <br> {{is_numeric($transact->to)?$users->where('id',$transact->to)->first()->name:$transact->to}}</td>
+                                    <td>{{is_numeric($transact->approved_by)?$users->where('id',$transact->approved_by)->first()->name:$transact->approved_by}} / <br> {{is_numeric($transact->recorded_by)?$users->where('id',$transact->recorded_by)->first()->name:$transact->recorded_by}}</td>
                                     <td>
-
-                                        <button class="label label-primary" id="ach{{$transact->id}}" onclick="transaction({{$transact->id}})"  data-toggle="modal" data-target="#transaction" data-title="{{$transact->title}}" data-amount="{{$transact->amount}}" data-account_head="{{$transact->account_head}}" data-date="{{$transact->date}}" data-reference_no="{{$transact->reference_no}}" data-detail="{{$transact->detail}}" data-from="{{$transact->from}}" data-to="{{$transact->to}}" data-approved_by="{{$transact->approved_by}}"  data-recorded_by="{{$transact->recorded_by}}">Edit</button>
+                                        <button class="label label-primary" id="ach{{$transact->id}}" onclick="transaction({{$transact->id}})"  data-toggle="modal" data-target="#transaction" data-title="{{$transact->title}}" data-amount="{{$transact->amount}}" data-account_head="{{$transact->account_head}}" data-date="{{$transact->dated}}" data-reference_no="{{$transact->reference_no}}" data-detail="{{$transact->detail}}" data-from="{{$transact->from}}" data-to="{{$transact->to}}" data-approved_by="{{$transact->approved_by}}"  data-recorded_by="{{$transact->recorded_by}}">Edit</button>
                                         @if ($transact->account_head==1)
                                             <a href="{{url('/invoice/invoice/'.$transact->id)}}" target="_blank" class="label label-success">Invoice</a>
-                                            <a href="{{url('/invoice/receipt/'.$transact->id)}}" target="_blank" class="label label-warning">Reciept</a>
                                         @endif
-
+                                        <a href="{{url('/invoice/receipt/'.$transact->id)}}" target="_blank" class="label label-warning">Reciept</a>
                                         <a href="{{url('/delete-trans/'.$transact->id)}}" class="label label-danger Super"  onclick="return confirm('Are you sure you want to delete {{$transact->detail}}\'s Financial Record?')">Delete</a>
                                     </td>
 
                                 </tr>
                             @endforeach
 
-
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>#</td>
+                                <td>Title</td>
+                                <td>Amount</td>
+                                <td>Balance</td>
+                                <td>Account Head</td>
+                                <td>Date</td>
+                                <td>Invoice No</td>
+                                <td>Detail</td>
+                                <td>From / To</td>
+                                <td>Approved By / Entered By</td>
+                                <td>Action</td>
+                            </tr>
+                        </tfoot>
                     </table>
                     <div style="text-align: right">
                         {{$transactions->links("pagination::bootstrap-4")}}
@@ -80,7 +99,7 @@
 
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Add New Transction Record</h4>
+          <h4 class="modal-title">Transaction Form</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
 
@@ -89,7 +108,7 @@
 
             <form method="POST" action="{{ route('addtransaction') }}">
                 @csrf
-                <input type="hidden" name="id" id="id">
+                <input type="hidden" name="id" id="0">
                 <div class="row">
                     <div class="form-group col-md-6">
                     <label for="amount">Amount</label>
@@ -98,7 +117,7 @@
 
                     <div class="form-group col-md-6">
                         <label for="date">Transaction Date</label>
-                        <input type="date" name="date" id="date" class="form-control">
+                        <input type="text" name="date" id="date" class="form-control datepicker">
                     </div>
 
 
@@ -120,17 +139,19 @@
                     </div>
                 </div>
 
-
-
-
                 <div class="form-group">
-                    <label for="reference_no">Reference</label>
-                    <input type="text" name="reference_no" id="reference_no" class="form-control" placeholder="e.g. Check Number, Transfer re, teller no">
+                    <label for="reference_no">Invoice/Job Number</label>
+                    <select name="reference_no" id="reference_no" class="form-control select2" style="width: 100%">
+                        <option value="">Select Invoice Number (optional)</option>
+                        @foreach ($transactions->where('payment_status','!=','Returned') as $inv)
+                            <option value="{{$inv->reference_no}}">{{$inv->title}} (Balance: {{$inv->balance}})</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="form-group">
                     <label for="detail">More Info</label>
-                    <input type="text" name="detail" id="detail" class="form-control" placeholder="e.g. Check Number, Transfer re, teller no">
+                    <input type="text" name="detail" id="detail" class="form-control" placeholder="e.g. Check Number, Transfer, Teller no">
                 </div>
 
                 <div class="row">

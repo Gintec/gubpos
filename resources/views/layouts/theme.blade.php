@@ -78,7 +78,7 @@
 				</div>
 				<div class="col-lg-9">
 					<b style="color: {{$settings->color}}">{{$settings->business_name}}</b><br>
-					<small>{{$settings->motto}}</small>
+					<small style="font-size: 0.7em;">{{$settings->motto}}</small>
 				</div>
 			</div>
 			<div class="container-fluid">
@@ -205,8 +205,8 @@
                                     <ul class="nav">
                                         <li><a href="{{ url('/products')}}" class="">Product List</a></li>
                                         <li><a href="{{ url('/spareparts')}}" class="">List of Accessories/Parts</a></li>
-                                        <li><a href="{{ url('/psupplies')}}" class="">Supplied Products</a></li>
-                                        <li><a href="{{ url('/sparepartSupplies')}}" class="">Supplied Accessories/Parts</a></li>
+                                        <li><a href="{{ url('/psupplies')}}" class="">Products Received</a></li>
+                                        <li><a href="{{ url('/sparepartSupplies')}}" class="">Accessories/Parts Received</a></li>
                                     </ul>
                                 </div>
                             </li>
@@ -279,7 +279,7 @@
 		<!-- MAIN -->
 		<div class="main">
 			<!-- MAIN CONTENT -->
-			<div class="main-content">
+			<div class="main-content" style="position: relative !important; width: 100%;">
 				<div class="container-fluid" style="position: relative !important; width: 100%;">
 					<!-----------------------------START YIELD PAGE CONTENT -->
 					@if (Session::get('message'))
@@ -647,7 +647,7 @@
 		var table = $('#products').DataTable( {
 			orderCellsTop: true,
 			fixedHeader: true,
-			"order": [[ 0, "asc" ]],
+			"order": [[ 0, "desc" ]],
 			"paging": false,
 			"pageLength": 50,
 			"filter": true,
@@ -660,7 +660,7 @@
 		} );
 	</script>
 @endif
-@if (isset($pagename) && $pagename=="programmes")
+@if (isset($pagename) && $pagename=="service")
     <link href="{{asset('node_modules/froala-editor/css/froala_editor.pkgd.min.css')}}" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="{{asset('node_modules/froala-editor/js/froala_editor.pkgd.min.js')}}"></script>
     <script>
@@ -680,8 +680,6 @@
 
 	<script>
 		function accountHead(accid){
-
-
 
 					var title = $('#ach'+accid).attr("data-title");
 					var category = $('#ach'+accid).attr("data-category");
@@ -703,7 +701,6 @@
             var description = $('#ach'+accid).attr("data-description");
             var setting_id = $('#ach'+accid).attr("data-setting_id");
 
-
             $('#id').val(accid);
             $('#title').val(title);
             $('#category_group').val(category_group).attr("selected", "selected");
@@ -713,55 +710,9 @@
 
         }
 
-        function productionjob(accid){
-            var batchno = $('#ach'+accid).attr("data-batchno");
-
-            var target_quantity = $('#ach'+accid).attr("data-target_quantity");
-            var product_id = $('#ach'+accid).attr("data-product_id");
-            var staff_incharge = $('#ach'+accid).attr("data-staff_incharge");
-            var dated_started = $('#ach'+accid).attr("data-dated_started");
-            var dated_ended = $('#ach'+accid).attr("data-dated_ended");
-            var status = $('#ach'+accid).attr("data-status");
-            var estimated_cost_of_production = $('#ach'+accid).attr("data-estimated_cost_of_production");
-            var setting_id = $('#ach'+accid).attr("data-setting_id");
-
-            $('#id').val(accid);
-            $('#batchno').val(batchno);
-            $('#target_quantity').val(target_quantity);
-            $('#product_id').val(product_id).attr("selected", "selected");
-            $('#staff_incharge').val(staff_incharge).attr("selected", "selected");
-            $('#dated_started').val(dated_started);
-            $('#dated_ended').val(dated_ended);
-            $('#status').val(status);
-            $('#estimated_cost_of_production').val(estimated_cost_of_production);
-            $('#setting_id').val(setting_id);
-
-            $('#pjobbutton').html("Update Production Job");
-        }
-
-		function attendance(accid){
-
-
-
-			var date = $('#ach'+accid).attr("data-date");
-			var activity = $('#ach'+accid).attr("data-activity");
-			var men = $('#ach'+accid).attr("data-men");
-			var women = $('#ach'+accid).attr("data-women");
-			var children = $('#ach'+accid).attr("data-children");
-			var remarks = $('#ach'+accid).attr("data-remarks");
-
-			$('#id').val(accid);
-			$('#date').val(date);
-			$('#activity').val(activity).attr("selected", "selected");
-			$('#men').val(men);
-			$('#women').val(women);
-			$('#children').val(children);
-			$('#remarks').val(remarks);
-
-		}
-
 		function transaction(accid){
 
+           // $("#reference_no option:selected").removeAttr("selected");
 
 			var title = $('#ach'+accid).attr("data-title");
 			var date = $('#ach'+accid).attr("data-date");
@@ -779,18 +730,18 @@
 			$('#date').val(date);
 			$('#account_head').val(account_head).attr("selected", "selected");
 			$('#amount').val(amount);
-			$('#reference_no').val(reference_no);
+			$('#reference_no').val(reference_no).attr("selected", "selected");
 			$('#detail').val(detail);
 			$('#from').val(from).attr("selected", "selected");
 			$('#to').val(to).attr("selected", "selected");
 			$('#approved_by').val(approved_by).attr("selected", "selected");
 			$('#recorded_by').val(recorded_by).attr("selected", "selected");
 
+            // $("#reference_no").text($("#reference_no option:selected").text());
+
 		}
 
 		function business(accid){
-
-
 
 			var name = $('#ach'+accid).attr("data-name");
 			var details = $('#ach'+accid).attr("data-details");
@@ -804,132 +755,6 @@
 			$('#activities').text(activities);
 
 		}
-
-        function material(accid){
-
-            var name = $('#ach'+accid).attr("data-name");
-            var type = $('#ach'+accid).attr("data-type");
-            var measurement_unit = $('#ach'+accid).attr("data-measurement_unit");
-            var size = $('#ach'+accid).attr("data-size");
-            var picture = $('#ach'+accid).attr("data-picture");
-
-            var cost_per = $('#ach'+accid).attr("data-cost_per");
-            var setting_id = $('#ach'+accid).attr("data-setting_id");
-            var category = $('#ach'+accid).attr("data-category");
-
-            $('#id').val(accid);
-            $('#name').val(name);
-            $('#type').val(type).attr("selected", "selected");
-            $('#measurement_unit').val(measurement_unit);
-            $('#size').val(size);
-
-
-
-            $('#cost_per').val(cost_per);
-            $('#oldpicture').val(picture);
-            $('#category').val(category).attr("selected", "selected");
-            $('#setting_id').val(setting_id).attr("selected", "selected");
-            $('#matbutton').html("Update Material");
-
-        }
-
-
-        function materialdamages(accid){
-
-            var name = $('#ach'+accid).attr("data-name");
-            var material_id = $('#ach'+accid).attr("data-material_id");
-            var invoiceno = $('#ach'+accid).attr("data-invoiceno");
-            var batchno = $('#ach'+accid).attr("data-batchno");
-            var reason = $('#ach'+accid).attr("data-reason");
-
-            var quantity = $('#ach'+accid).attr("data-quantity");
-            var setting_id = $('#ach'+accid).attr("data-setting_id");
-            var dated = $('#ach'+accid).attr("data-dated");
-            var damaged_by = $('#ach'+accid).attr("data-damaged_by");
-
-            $('#id').val(accid);
-            $('#name').val(name);
-            $('#material_id').val(material_id).attr("selected", "selected");
-            $('#invoiceno').val(invoiceno);
-            $('#batchno').val(batchno);
-            $('#dated').val(dated);
-
-
-            $('#reason').val(reason);
-            $('#quantity').val(quantity);
-            $('#damaged_by').val(damaged_by).attr("selected", "selected");
-            $('#setting_id').val(setting_id).attr("selected", "selected");
-            $('#matdbutton').html("Update Damaged Material");
-
-        }
-
-        function productDamages(accid){
-
-            var product_name = $('#ach'+accid).attr("data-product_name");
-            var product_id = $('#ach'+accid).attr("data-product_id");
-            var invoiceno = $('#ach'+accid).attr("data-invoiceno");
-            var batchno = $('#ach'+accid).attr("data-batchno");
-            var reason = $('#ach'+accid).attr("data-reason");
-
-            var quantity = $('#ach'+accid).attr("data-quantity");
-            var setting_id = $('#ach'+accid).attr("data-setting_id");
-            var dated = $('#ach'+accid).attr("data-dated");
-            var damaged_by = $('#ach'+accid).attr("data-damaged_by");
-
-            $('#id').val(accid);
-            $('#name').val(name);
-            $('#product_id').val(product_id).attr("selected", "selected");
-            $('#invoiceno').val(invoiceno);
-            $('#batchno').val(batchno);
-            $('#dated').val(dated);
-
-
-            $('#reason').val(reason);
-            $('#quantity').val(quantity);
-            $('#damaged_by').val(damaged_by).attr("selected", "selected");
-            $('#setting_id').val(setting_id).attr("selected", "selected");
-            $('#prddbutton').html("Update Damaged Product");
-
-        }
-
-        function materialcheckout(accid){
-
-            $("#forcheckout").show();
-
-            $("#materiallist").hide();
-
-            var material_name = $('#ach'+accid).attr("data-material_name");
-
-            $("#material_named").text(material_name).change();
-
-            $("#quantity").attr('type','number').change();
-
-            var checkout_by = $('#ach'+accid).attr("data-checkout_by");
-            var approved_by = $('#ach'+accid).attr("data-approved_by");
-            var production_batch = $('#ach'+accid).attr("data-production_batch");
-
-            var material_id = $('#ach'+accid).attr("data-material_id");
-            var quantity = $('#ach'+accid).attr("data-quantity");
-            var setting_id = $('#ach'+accid).attr("data-setting_id");
-            var dated = $('#ach'+accid).attr("data-dated");
-            var details = $('#ach'+accid).attr("data-details");
-
-            var date_supplied = $('#ach'+accid).attr("data-date_supplied");
-
-
-            $('#id').val(accid);
-            $('#production_batch').val(production_batch).attr("selected", "selected").change();
-            $('#checkout_by').val(checkout_by).attr("selected", "selected").change();
-            $('#material_id').val(material_id).attr("selected", "selected").change();
-            $('#quantity').val(quantity);
-            $('#dated').val(dated);
-            $('#details').val(details);
-            $('#approved_by').val(approved_by).attr("selected", "selected").change();
-
-            $('#setting_id').val(setting_id).attr("selected", "selected").change();
-            $('#mtcbutton').html("Update Checkout");
-
-        }
 
         function product(accid){
 
@@ -948,7 +773,6 @@
             $('#type').val(type).attr("selected", "selected");
             $('#measurement_unit').val(measurement_unit);
             $('#size').val(size);
-
 
 
             $('#price').val(price);
@@ -1038,37 +862,6 @@
 
         }
 
-		function programme(accid){
-
-            var title = $('#ach'+accid).attr("data-title");
-			var type = $('#ach'+accid).attr("data-type");
-			var from = $('#ach'+accid).attr("data-from");
-			var to = $('#ach'+accid).attr("data-to");
-            var picture = $('#ach'+accid).attr("data-pic");
-
-			var details = $('#ach'+accid).attr("data-details");
-			var category = $('#ach'+accid).attr("data-category");
-			var business = $('#ach'+accid).attr("data-business");
-
-			$('#id').val(accid);
-			$('#title').val(title);
-			$('#type').val(type).attr("selected", "selected");
-			$('#from').val(from);
-			$('#to').val(to);
-
-
-
-			$('#details').val(details);
-            $('#oldpicture').val(picture);
-			$('#category').val(category).attr("selected", "selected");
-			$('#business').val(business).attr("selected", "selected");
-
-            // var editor2 = new FroalaEditor('.richtext', {}, function () {
-            // Call the method inside the initialized event.
-            editor.html.set(details);
-            // });
-		}
-
 		function addnumber(number){
 			var receivers = $('#recipients').val();
 
@@ -1143,8 +936,23 @@
             reCalc();
         }
         @if (isset($pagename) && $pagename=="newsales")
-            $(document).on('input','.form-control',function(event){
+
+            var formSubmitted = false;
+
+
+            $('#selecteditems').submit(function () {
+                formSubmitted = true;
+            });
+
+            $(document).on('input','.numberInput, #discount, #tax_percent',function(event){
                 reCalc();
+            });
+
+            $(window).on('beforeunload', function (e) {
+                // Return a string to display a confirmation prompt
+                if (!formSubmitted) {
+                    return 'Are you sure you want to leave this page?';
+                }
             });
         @endif
 
@@ -1168,28 +976,23 @@
 
                 // alert($(this).val().replace(/,/g, ''));
             });
-            $("#total_due").val(sum.toFixed(2));
-
-            // alert(sum);
-
 
             // RECALCULATE TOTAL DISCOUNT
             var total_discount = $("#discount").val().replace(/,/g, '');
 
-            //$(".discount").each(function(){
-              //  total_discount += +$(this).val();
-            // });
+            sum = parseFloat(sum)-parseFloat(total_discount);
 
-            // $("#total_discount").val(total_discount.toFixed(2));
+            // alert(sum);
+            $("#total_due").val(sum.toFixed(2));
+
+            // alert(sum);
 
             var tax_percent = $("#tax_percent").val().replace(/,/g, '');
             tax = parseFloat(tax_percent)*(parseFloat(sum)/100);
 
             $("#tax").val(tax);
 
-            // var total_discount = $("#total_discount").val();
-
-            var new_sum = (parseFloat(sum)+parseFloat(tax)) - parseFloat(total_discount);
+            var new_sum = (parseFloat(sum)+parseFloat(tax));
             new_sum = addCommas(new_sum);
             $("#total_due").val(new_sum);
 
@@ -1355,14 +1158,11 @@
             $(this).val(value);
         });
 
-
         function addCommas(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        // $('.select2').select2({
-        //         placeholder: 'Search products'
-        //     });
+        $('.select2').select2();
 
         $('.add-product').click(function() {
 

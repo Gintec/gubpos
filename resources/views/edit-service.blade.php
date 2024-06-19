@@ -1,5 +1,5 @@
 @extends('layouts.theme')
-
+@php $pagename = "service"; @endphp
 @section('content')
     <h3 class="page-title">Add New Members </h3>
 
@@ -78,7 +78,7 @@
                         <div class="row">
                             <div class="form-group col-md-12">
                                 <label for="description">Customer's Request/Service to Offer:</label>
-                                <textarea class="form-control" id="description" name="description" rows="3">{{$service->description}}</textarea>
+                                <textarea class="form-control richtext" id="description" name="description" rows="3">{{$service->description}}</textarea>
                             </div>
                         </div>
 

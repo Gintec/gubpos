@@ -35,13 +35,21 @@
                                     <td>{{$deliv->transaction->reference_no}}</td>
                                     <th>{{$deliv->amount}}</th>
                                     <td>
-                                        <form action="saveDelivery" method="post">
+                                        @php
+                                            $readonly = "";
+                                            if($deliv->status=="Delivered"){
+                                                $readonly = "readonly";
+                                            }
+                                        @endphp
+                                        @if($readonly=="")
+                                        <form action="{{route('saveDelivery')}}" method="post">
                                             @csrf
+                                        @endif
                                             <input type="hidden" name="id" value="{{$deliv->id}}">
                                             <table>
                                                 <tr class="form-group">
                                                     <td>
-                                                        <select class="form-control" name="delivered_by" id="delivered_by">
+                                                        <select class="form-control" name="delivered_by" id="delivered_by" {{$readonly}}>
                                                             @if ($deliv->deliveredBy!="")
                                                                 <option value="{{$deliv->deliveredBy}}" selected>{{$deliv->DeliveredBy->name}}</option>
                                                             @else
@@ -55,13 +63,13 @@
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="details" class="form-control" placeholder="Recieved By" value="{{$deliv->details}}">
+                                                        <input type="text" name="details" class="form-control" placeholder="Recieved By" value="{{$deliv->details}}" {{$readonly}}>
                                                     </td>
                                                     <td>
-                                                        <input type="text" name="delivery_date" class="form-control datepicker" placeholder="Date" value="{{$deliv->delivery_date}}">
+                                                        <input type="text" name="delivery_date" class="form-control datepicker" placeholder="Date" value="{{$deliv->delivery_date}}" {{$readonly}}>
                                                     </td>
                                                     <td>
-                                                        <select class="form-control" name="status" id="status">
+                                                        <select class="form-control" name="status" id="status" {{$readonly}}>
                                                             @if ($deliv->status!="")
                                                                 <option value="{{$deliv->status}}">{{$deliv->status}}</option>
                                                             @else
@@ -72,15 +80,17 @@
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <button class="btn btn-success">Save</button>
+                                                        <button class="btn btn-success" {{$readonly}}>Save</button>
                                                     </td>
                                                 </tr>
                                             </table>
+                                        @if($readonly=="")
                                         </form>
+                                        @endif
 
 
                                     </td>
-                                    <td><a href="{{url('invoice/delivery/'.$deliv->invoice_no)}}" class="btn btn-primary" target="_blank">Note</a></td>
+                                    <td><a href="{{url('invoice/delivery/'.$deliv->invoice_no)}}" class="btn btn-primary" target="_blank">View</a></td>
 
                                 </tr>
                             @endforeach

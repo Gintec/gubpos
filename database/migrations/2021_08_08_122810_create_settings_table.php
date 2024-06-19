@@ -44,8 +44,8 @@ class CreateSettingsTable extends Migration
                 'mode' => 'Active',
                 'address' => 'Business Address',
                 'color' => '',
-                'user_id' => 1,
-                'businessgroup_id' => 1
+                'user_id' =>1,
+                'businessgroup_id' =>1
 
             )
         );

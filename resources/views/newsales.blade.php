@@ -51,19 +51,20 @@
 @section('content')
     @php $pagename = "newsales"; @endphp
 
+
     @if(Session::get('tid'))
         @php
             $tid = Session::get('tid');
         @endphp
         <div class="row">
-            <div class="col-md-3 col-md-offset-2">
+            <div class="col-md-3 col-md-offset-1">
                 <a href="{{url('new-invoice/invoice/'.$tid)}}" class="btn btn-success" target="_blank">Print Invoice</a>
             </div>
-            <div class="col-md-3 col-md-offset-2">
+            <div class="col-md-3 col-md-offset-1">
                 <a href="{{url('new-invoice/receipt/'.$tid)}}" class="btn btn-primary" target="_blank">Print Receipt</a>
             </div>
-            <div class="col-md-3 col-md-offset-2">
-                <a href="{{url('invoice/delivery/'.$tid)}}" class="btn btn-primary" target="_blank">Delivery Note</a>
+            <div class="col-md-3 col-md-offset-1">
+                <a href="{{url('invoice/delivery/'.$tid)}}" class="btn btn-warning" target="_blank">Delivery Note</a>
             </div>
         </div>
         <hr>
@@ -74,7 +75,7 @@
             <div class="panel">
 
                 <div class="panel-body">
-                    <div class="col-md-4">
+                    <div class="col-md-4" style="overflow-y: scroll; min-height: 800px; height: 100%">
                         @foreach ($products as $product)
                             <a href="#" data-pid="{{$product->id}}" data-munit="{{$product->measurement_unit}}"  data-price="{{$product->price}}" data-in_stock="{{$product->stock->quantity}}" data-name="{{$product->name}}" onclick="addItem({{$product->id}})" id="item{{$product->id}}">
                                 <div class="square bg img" style="background-image: url('{{asset('public/images/products/'.$product->picture)}}');">
@@ -118,7 +119,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><input type="text" class="form-control numberInput"   pattern="[0-9,]*" value="0" id="discount" name="discount" required></td>
+                                        <td><input type="text" class="form-control" pattern="[0-9,]*" value="0" id="discount" name="discount" required></td>
                                         <td><input type="text" class="form-control numberInput"   pattern="[0-9,]*" value="0" step="0.01" id="tax" name="tax" required></td>
                                         <td><input type="number" class="form-control" value="7.5" step="0.01" id="tax_percent" name="tax_percent" required></td>
                                         <td colspan="2"><input type="text"   pattern="[0-9,]*" class="form-control numberInput" value="0" id="total_due" name="total_due" readonly></td>
@@ -127,7 +128,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="4" style="text-align: right;"><b>Total Paid:</b> </td>
-                                        <td><input type="text"  pattern="[0-9,]*" class="form-control numberInput" value="0" id="amount_paid" name="amount_paid"></td>
+                                        <td><input type="text"  pattern="[0-9,]*" class="form-control" value="0" id="amount_paid" name="amount_paid"></td>
 
                                     </tr>
                                     <tr>

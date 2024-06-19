@@ -3,14 +3,14 @@
 @section('content')
     @php $pagetype="report"; @endphp
 
-    <h3 class="page-title">Members | <small style="color: green">All Members</small></h3>
+    <h3 class="page-title">Workers | <small style="color: green">All Personnel</small></h3>
     <div class="row">
 
 
 
             <div class="panel">
                 <div class="panel-heading">
-                    <a href="{{url('/add-new')}}" class="btn btn-primary pull-right" style="margin-bottom: 10px;">Add New User</a>
+                    <a href="{{url('/add-new')}}" class="btn btn-primary pull-right" style="margin-bottom: 10px;">Add New</a>
                 </div>
                 <div class="panel-body">
                     <table class="table  responsive-table" id="products">

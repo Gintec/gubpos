@@ -1,7 +1,7 @@
 @extends('layouts.theme')
 
 @section('content')
-    @php $modal="product"; $pagename = "products"; @endphp
+    @php $pagetype="report"; $pagename = "products"; @endphp
 
     <h3 class="page-title">Accessories/Spareparts | <small style="color: green">List</small></h3>
     <div class="row">
@@ -13,7 +13,7 @@
 
                 </div>
                 <div class="panel-body">
-                    <table class="table responsive-table">
+                    <table class="table responsive-table" id="products"  style="width: 100%;">
                         <thead>
                             <tr style="color: ">
 

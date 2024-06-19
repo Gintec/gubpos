@@ -1,6 +1,7 @@
 @extends('layouts.theme')
-
+@php $pagename = "service"; @endphp
 @section('content')
+
     <h3 class="page-title">Create New Service </h3>
 
     <div class="panel">
@@ -60,7 +61,7 @@
                         <div class="row">
                             <div class="form-group col-md-12">
                                 <label for="description">Customer's Request/Service to Offer:</label>
-                                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                                <textarea class="form-control richtext" id="description" name="description" rows="3"></textarea>
                             </div>
                         </div>
 
@@ -90,7 +91,7 @@
                             <div class="form-group col-md-6">
                                 <label>Submit Form</label> <br>
 
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
                             </div>
 
                         </div>

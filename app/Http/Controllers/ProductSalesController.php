@@ -7,6 +7,7 @@ use App\Models\products;
 use App\Models\product_stocks;
 use App\Models\User;
 use App\Models\delivery;
+use App\Models\returns;
 use Illuminate\Support\Facades\Hash;
 use PDF;
 
@@ -89,20 +90,25 @@ class ProductSalesController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->amount_paid==$request->total_due){
+        $amount_paid = str_replace(',', '',$request->amount_paid);
+        $total_due = str_replace(',', '',$request->total_due);
+        $balance = 0;
+
+        if($amount_paid==$total_due){
             $pay_status = "Paid";
             $balance = 0;
-        }elseif($request->amount_paid>$request->total_due){
+        }elseif($amount_paid>$total_due){
             $pay_status = "Overpaid";
-            $balance = $request->amount_paid-$request->total_due;
-        }elseif($request->amount_paid<$request->total_due){
-            $pay_status = "Half Payment";
-            $balance = $request->total_due-$request->amount_paid;
+            $balance = $amount_paid-$total_due;
+        }elseif($amount_paid<$total_due){
+            $pay_status = "Part Payment";
+            $balance = $total_due-$amount_paid;
         }else{
             $pay_status = "Not Paid";
-            $balance = $request->total_due;
+            $balance = $total_due;
         }
         $delivery_fee = 0;
+
         if(isset($request->delivery_fee)){
             $delivery_fee=$request->delivery_fee;
         }
@@ -112,7 +118,7 @@ class ProductSalesController extends Controller
         if (User::where('id', '=', $request->customer)->exists()) {
             $buyer = $request->customer;
             $address = user::select('address')->where('id',$buyer)->first()->address;
-         }elseif($request->customer=='New'){
+        }elseif($request->customer=='New'){
                 $email = 'guest@gubabi.com';
                 if(isset($request->email) && $request->email!=''){
                     $email = $request->email;
@@ -126,7 +132,7 @@ class ProductSalesController extends Controller
                     'dob' => $request->dated_sold,
                     'password' => $password,
                     'about' => $request->details,
-                    'about' => $request->address,
+                    'address' => $request->address,
                     'role'=>"Customer",
                     'category'=>"Customer",
                     'status'=>"InActive",
@@ -134,11 +140,9 @@ class ProductSalesController extends Controller
                 ])->id;
 
                 $address = $request->address;
-            }else{
+        }else{
                 $buyer = 1;
-            }
-
-
+        }
 
          if($request->group_id==""){
             $group_id =  substr(md5(uniqid(mt_rand(), true).microtime(true)),0, 7);
@@ -163,12 +167,9 @@ class ProductSalesController extends Controller
                 'group_id' => $group_id,
                 'details' => $request->details,
                 'setting_id'=>Auth()->user()->setting_id
-
             ]);
 
-
             // Update Product Stock
-
             product_stocks::updateOrCreate(['product_id'=>$product_id],[
                 'product_id'=>$product_id,
             ])->decrement('quantity',$request->qty[$key]);
@@ -178,7 +179,7 @@ class ProductSalesController extends Controller
         // RECORD TRANSACTION
         $tid = transactions::create([
             'title'=>"Item Sales - Invoice No: ".$group_id,
-            'amount'=>str_replace(',', '',$request->total_due)+$delivery_fee,
+            'amount'=>$total_due+$delivery_fee,
             'account_head' => 1,
             'dated' => $request->dated_sold,
             'reference_no' => $group_id,
@@ -189,9 +190,9 @@ class ProductSalesController extends Controller
             'recorded_by' => Auth()->user()->id,
             'payment_status' => $pay_status,
             'transaction_id' => $group_id,
-            'balance' => str_replace(',', '',$request->total_due)-str_replace(',', '',$request->amount_paid),
+            'balance' => $balance,
             'vat' =>str_replace(',', '', $request->tax),
-            'discount'=>str_replace(',', '',$request->discount),
+            'discount'=>$request->discount,
             'beneficiary' => Auth()->user()->setting_id,
             'setting_id' => Auth()->user()->setting_id
         ])->id;
@@ -211,6 +212,47 @@ class ProductSalesController extends Controller
         $message = "Sales Successful";
         return redirect()->back()->with(['tid'=>$tid,'message'=>$message]);
 
+    }
+
+
+    public function returnItem($itemid)
+    {
+        $item = product_sales::where('id',$itemid)->first();
+
+        return view('new-returned', compact('item'));
+    }
+
+    public function saveReturned(Request $request)
+    {
+        $item = product_sales::where('id',$request->item_id)->first();
+
+        // Update Transaction
+        $itransaction = transactions::where('reference_no',$item->group_id)->orWhere('transaction_id',$item->group_id)->first();
+
+            $itransaction->decrement('amount',$request->amount);
+            $itransaction->save();
+
+        if($item->quantity==$request->quantity){
+            $item->group_id = "Returned to ".$request->returnedto;
+            $item->pay_status = "Returned";
+            $item->details = $request->reason;
+            $item->save();
+        }else{
+            $item->decrement('quantity',$request->quantity);
+            $item->save();
+        }
+
+
+        // Return to Stock
+        if($request->returnedto=="Stock"){
+            product_stocks::updateOrCreate(['product_id'=>$item->product_id],[
+                'product_id'=>$item->product_id,
+            ])->increment('quantity',$request->quantity);
+        }
+
+        returns::create($request->all());
+
+        return redirect()->back()->with(['message'=>"Item return save successfully"]);
     }
 
     public function addproforma(Request $request)
@@ -243,7 +285,7 @@ class ProductSalesController extends Controller
                     'dob' => $request->dated_sold,
                     'password' => $password,
                     'about' => $request->details,
-                    'about' => $request->address,
+                    'address' => $request->address,
                     'role'=>"Customer",
                     'category'=>"Customer",
                     'status'=>"InActive",
@@ -268,6 +310,7 @@ class ProductSalesController extends Controller
                 'buyer' => $buyer,
                 'price' => str_replace(',', '',$request->unit[$key]),
                 'amount_paid' => str_replace(',', '',$request->amount[$key]),
+                // 'amount_paid' => str_replace(',', '',$request->amount[$key]),
                 'pay_status' => $pay_status,
                 'dated_sold' => $request->dated_sold,
                 'group_id' => $group_id,
@@ -289,7 +332,7 @@ class ProductSalesController extends Controller
             'recorded_by' => Auth()->user()->id,
             'payment_status' => $pay_status,
             'transaction_id' => $group_id,
-            'balance' => str_replace(',', '',$request->total_due)-str_replace(',', '',$request->amount_paid),
+            'balance' => 0,
             'vat' => str_replace(',', '',$request->tax),
             'discount'=>str_replace(',', '',$request->discount),
             'beneficiary' => Auth()->user()->setting_id,
@@ -313,18 +356,29 @@ class ProductSalesController extends Controller
 
     public function updateInvoice(Request $request)
     {
-        if($request->amount_paid==$request->total_due){
-            $pay_status = "Paid";
-            $balance = 0;
-        }elseif($request->amount_paid>$request->total_due){
-            $pay_status = "Overpaid";
-            $balance = $request->amount_paid-$request->total_due;
-        }elseif($request->amount_paid<$request->total_due){
-            $pay_status = "Half Payment";
-            $balance = $request->total_due-$request->amount_paid;
-        }else{
-            $pay_status = "Not Paid";
-            $balance = $request->total_due;
+        $amount_paid = str_replace(',', '',$request->amount_paid);
+        $total_due = str_replace(',', '',$request->total_due);
+        $balance = 0;
+        $pay_status = "Proforma";
+        $title = "Profoma No: ";
+        $accounthead = 5;
+
+        if(isset($request->convert) && $request->convert=="Yes"){
+            if($amount_paid==$total_due){
+                $pay_status = "Paid";
+                $balance = 0;
+            }elseif($amount_paid>$total_due){
+                $pay_status = "Overpaid";
+                $balance = $amount_paid-$total_due;
+            }elseif($amount_paid<$total_due){
+                $pay_status = "Part Payment";
+                $balance = $total_due-$amount_paid;
+            }else{
+                $pay_status = "Not Paid";
+                $balance = $total_due;
+            }
+            $title = "Item Sales - Invoice No: ";
+            $accounthead = 1;
         }
         $buyer = $request->customer;
         $address = user::select('address')->where('id',$buyer)->first()->address;
@@ -333,6 +387,7 @@ class ProductSalesController extends Controller
             $delivery_fee=$request->delivery_fee;
         }
 
+         product_sales::where('group_id',$request->reference_no)->delete();
 
          if($request->group_id==""){
             $group_id =  substr(md5(uniqid(mt_rand(), true).microtime(true)),0, 7);
@@ -340,8 +395,9 @@ class ProductSalesController extends Controller
             $group_id = $request->group_id;
          }
 
+
         foreach($request->product_id as $key => $product_id){
-            product_sales::updateOrCreate(['id'=>$request->pid[$key]],[
+            product_sales::create([
                 'product_id' => $product_id,
                 'quantity' => $request->qty[$key],
                 'sales_person' => Auth()->user()->id,
@@ -356,24 +412,19 @@ class ProductSalesController extends Controller
                 'setting_id'=>Auth()->user()->setting_id
             ]);
 
-            $accounthead = 5;
+
             // Update Product Stock
             if(isset($request->convert) && $request->convert=="Yes"){
                 product_stocks::updateOrCreate(['product_id'=>$product_id],[
                     'product_id'=>$product_id,
                 ])->decrement('quantity',$request->qty[$key]);
                 $accounthead = 1;
-            }else{
-                // product_stocks::updateOrCreate(['product_id'=>$product_id],[
-                //     'product_id'=>$product_id,
-                // ])->decrement('quantity',$request->qty[$key]);
-                $accounthead = 1;
             }
         }
 
         // RECORD TRANSACTION
         $tid = transactions::updateOrCreate(['id'=>$request->id],[
-            'title'=>"Item Sales - Invoice No: ".$group_id,
+            'title'=>$title.$group_id,
             'amount'=>str_replace(',', '',$request->total_due)+$delivery_fee,
             'account_head' => $accounthead,
             'dated' => $request->dated_sold,
@@ -392,7 +443,7 @@ class ProductSalesController extends Controller
             'setting_id' => Auth()->user()->setting_id
         ])->id;
 
-        if($delivery_fee>0){
+
             delivery::updateOrCreate(['invoice_no'=>$tid],[
                 'customer'=>$buyer,
                 'invoice_no'=>$tid,
@@ -400,16 +451,17 @@ class ProductSalesController extends Controller
                 'delivery_address'=>$address,
                 'status'=>$pay_status
             ]);
-        }
+
 
         // $sales = product_sales::paginate(50);
-        $message = "Invoice Successfully Updated";
+        $message = $pay_status." - Invoice Successfully Updated";
         return redirect()->back()->with(['tid'=>$tid,'message'=>$message]);
     }
 
     public function sale()
     {
-        $lastInvoice = transactions::select('id','reference_no')->where('payment_status','!=','Proforma')->orderBy('id','desc')->first();
+        $lastInvoice = transactions::select('id','reference_no')->where('payment_status','!=','Proforma')->where('account_head',1)->orderBy('id','desc')->first();
+
         if(!empty($lastInvoice)){
             $lastInvoiceNo = $lastInvoice->reference_no;
         }else{
@@ -421,8 +473,14 @@ class ProductSalesController extends Controller
 
     public function newproforma()
     {
+        $lastInvoice = transactions::select('id','reference_no')->where('payment_status','Proforma')->orderBy('id','desc')->first();
+        if(!empty($lastInvoice)){
+            $lastInvoiceNo = $lastInvoice->reference_no;
+        }else{
+            $lastInvoiceNo = 0;
+        }
         $products = products::select('id','name','price','picture','measurement_unit')->get();
-        return view('newproforma', compact('products'));
+        return view('newproforma', compact('products','lastInvoiceNo'));
     }
 
     public function invoice($category,$tid)
@@ -532,7 +590,7 @@ class ProductSalesController extends Controller
 
     public function deliveries(){
         $deliveries = delivery::all();
-        $deliverymen = User::select('id','name','about')->where('category','Delivery')->get();
+        $deliverymen = User::select('id','name','about')->where('category','Contractor')->get();
         return view('deliveries',compact('deliveries','deliverymen'));
     }
 

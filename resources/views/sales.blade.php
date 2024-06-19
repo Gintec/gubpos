@@ -48,7 +48,9 @@
                                 <th>Confirmed By</th>
                                 <th>Date Sold</th>
                                 <th>Details</th>
-                                <th>Action</th>
+                                @if (auth()->user()->role=="Super")
+                                    <th>Action</th>
+                                @endif
 
                             </tr>
                         </thead>
@@ -66,8 +68,10 @@
                                     <td>{{$sale->confirmedby->name}}</td>
                                     <td>{{$sale->dated_sold}}</td>
                                     <td>{{$sale->detail}}</td>
-                                    <td>
-                                        <a href="{{url('/delete-sale/'.$sale->id)}}" class="label label-danger" onclick="return confirm('Are you sure you want to delete the Sales checkout record, this will return the {{$sale->product->name}} with quantity {{$sale->quantity}} back to stock?')">Delete</a>
+                                    <td>    @if (auth()->user()->role=="Super")
+                                                <a href="{{url('/return-item/'.$sale->id)}}" class="label label-warning label-xs" >Return</a>
+                                                <a href="{{url('/delete-sale/'.$sale->id)}}" class="label label-danger label-xs" onclick="return confirm('Are you sure you want to delete the Sales checkout record, this will return the {{$sale->product->name}} with quantity {{$sale->quantity}} back to stock?')">Delete</a>
+                                            @endif
                                     </td>
 
                                 </tr>

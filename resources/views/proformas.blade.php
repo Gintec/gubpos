@@ -39,8 +39,9 @@
                                     <td>
 
                                         <a href="{{url('/edit-invoice/'.$transact->id)}}" target="_blank" class="label label-success">Edit Invoice</a>
-
-                                        <a href="{{url('/delete-trans/'.$transact->id)}}" class="label label-danger Super"  onclick="return confirm('Are you sure you want to delete {{$transact->detail}}\'s Proforma Invoice?')">Delete</a>
+                                        @if (auth()->user()->role=="Super")
+                                            <a href="{{url('/delete-trans/'.$transact->id)}}" class="label label-danger Super"  onclick="return confirm('Are you sure you want to delete {{$transact->detail}}\'s Proforma Invoice?')">Delete</a>
+                                        @endif
                                     </td>
 
                                 </tr>

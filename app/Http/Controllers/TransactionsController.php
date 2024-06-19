@@ -17,9 +17,9 @@ class TransactionsController extends Controller
      */
     public function index()
     {
-        $accountheads = accountheads::where('setting_id',Auth()->user()->setting_id)->get();
+        $accountheads = accountheads::all();
 
-        $transactions = transactions::where('setting_id',Auth()->user()->setting_id)->paginate(50);
+        $transactions = transactions::orderBy('id','desc')->paginate(50);
         $users = User::select('id','name')->get();
 
         return view('transactions', compact('transactions','users','accountheads'));
@@ -49,25 +49,68 @@ class TransactionsController extends Controller
      */
     public function store(Request $request)
     {
-        transactions::updateOrCreate(['id'=>$request->id],[
-            'title' => $request->title,
-            'amount' => $request->amount,
-            'account_head' => $request->account_head,
-            'dated'=>$request->date,
-            'reference_no' => $request->reference_no,
-            'upload'=>'',
-            'detail'=>$request->detail,
-            'from'=>$request->from,
-            'to'=>$request->to,
-            'approved_by'=>$request->approved_by,
-            'recorded_by'=>$request->recorded_by,
+        if($request->id<1){
 
-        ]);
+            $newpay = transactions::create([
+                'title' => $request->title,
+                'amount' => $request->amount,
+                'account_head' => $request->account_head,
+                'dated'=>$request->date,
+                'reference_no' => $request->reference_no." Payment",
+                'upload'=>'',
+                'detail'=>$request->detail,
+                'from'=>$request->from,
+                'to'=>$request->to,
+                'approved_by'=>$request->approved_by,
+                'recorded_by'=>$request->recorded_by
+            ]);
+
+            // Update Old Record
+            if($request->reference_no!=""){
+                $trans = transactions::where('reference_no',$request->reference_no)->first();
+
+                if($request->amount==$trans->balance){
+                    $trans->balance=0;
+                    $trans->payment_status="Paid";
+
+                    $trans->productSales->pay_status="Paid";
+
+                    $trans->save();
+
+                    $newpay->payment_status="Completed Payment";
+                    $newpay->save();
+                }else{
+                    $trans->balance=$trans->balance-$request->amount;
+                    $trans->payment_status="Part Payment";
+                    $trans->save();
+
+                    $newpay->payment_status="Part Payment";
+                    $newpay->save();
+                }
+            }
+
+
+        }else{
+            transactions::where('id',$request->id)->update([
+                'title' => $request->title,
+                'amount' => $request->amount,
+                'account_head' => $request->account_head,
+                'dated'=>$request->date,
+                'reference_no' => $request->reference_no,
+                'upload'=>'',
+                'detail'=>$request->detail,
+                'from'=>$request->from,
+                'to'=>$request->to,
+                'approved_by'=>$request->approved_by,
+                'recorded_by'=>$request->recorded_by,
+
+            ]);
+        }
         $transactions = transactions::paginate(50);
         $accountheads = accountheads::select('title','category')->get();
         $users = User::select('id','name')->get();
 
-        return view('transactions', compact('transactions','accountheads','users'));
+        return view('transactions', compact('transactions','accountheads','users'))->with(['message'=>"Transaction saved successfully!"]);
 
     }
 

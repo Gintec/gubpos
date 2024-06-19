@@ -52,10 +52,11 @@
 
                                             <a href="{{url('/invoice/invoice/'.$transact->id)}}" target="_blank" class="label label-success">Invoice</a>
                                             <a href="{{url('/invoice/receipt/'.$transact->id)}}" target="_blank" class="label label-warning">Reciept</a>
-                                            <a href="{{url('/edit-invoice/'.$transact->id)}}" target="_blank" class="label label-primary">Edit</a>
+                                            {{-- <a href="{{url('/edit-invoice/'.$transact->id)}}" target="_blank" class="label label-primary">Edit</a> --}}
 
-
-                                        <a href="{{url('/delete-trans/'.$transact->id)}}" class="label label-danger Super"  onclick="return confirm('Are you sure you want to delete {{$transact->title}}\'s Financial Record?')">Delete</a>
+                                            @if (auth()->user()->role=="Super")
+                                                <a href="{{url('/delete-trans/'.$transact->id)}}" class="label label-danger Super"  onclick="return confirm('Are you sure you want to delete {{$transact->title}}\'s Financial Record?')">Delete</a>
+                                            @endif
                                     </td>
 
                                 </tr>

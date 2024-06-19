@@ -49,7 +49,7 @@
 
 </style>
 @section('content')
-    @php $modal="production_jobs"; $pagename = "production_jobs"; @endphp
+    @php $pagename = "newsales"; @endphp
 
     @if(Session::get('tid'))
         @php
@@ -66,7 +66,7 @@
         <hr>
     @endif
 
-    <h3 class="page-title">Edit Sales | <small style="color: green">Click to Select Items</small></h3>
+    <h3 class="page-title">Edit Invoice | <small style="color: green">Click to Select Items</small></h3>
     <div class="row">
             <div class="panel">
 
@@ -90,6 +90,7 @@
                         <form action="{{ route('update-invoice') }}" method="post" id="selecteditems">
                             @csrf
                             <input type="hidden" name="id" value="{{$trans->id}}">
+                            <input type="hidden" name="reference_no" value="{{$trans->reference_no}}">
                             <input type="hidden" name="old_deliveryfee" value="{{$trans->delivery ? $trans->delivery->amount : 0}}">
                             <table class="table" id="itemlist">
                                 <thead>
@@ -121,7 +122,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 36%">Total Amount</th>
-                                        <th style="width: 18%">Total Paid</th>
+                                        <th style="width: 18%">Total to Pay</th>
                                         <th style="width: 18%">Discount</th>
                                         <th style="width: 18%">Tax</th>
                                         <th style="width: 10%">Tax %</th>
@@ -172,7 +173,7 @@
                                         <div class="form-group col-md-4" style="margin-top: 20px;">
                                             <select class="form-control" name="convert">
                                                 <option value="" selected>Convert to Invoice?</option>
-                                                <option value="Yes">Yes, Make Invoice</option>
+                                                <option value="Yes">Yes, Make Sales Invoice</option>
                                                 <option value="No">Proforma</option>
 
                                             </select>
@@ -196,7 +197,13 @@
                                             <button type="submit" class="btn btn-primary">
                                                 {{ __('Update') }}
                                             </button>
+
+                                            <button type="submit" class="btn btn-success">
+                                                {{ __('Checkout') }}
+                                            </button>
                                         </div>
+
+
                                     </div>
 
                                 </div>

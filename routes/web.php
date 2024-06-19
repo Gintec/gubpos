@@ -116,6 +116,9 @@ Route::get('/newsales', [App\Http\Controllers\ProductSalesController::class, 'sa
 Route::post('/addsales', [App\Http\Controllers\ProductSalesController::class, 'store'])->name('addsales')->middleware('role:Finance,Admin,Super,Staff');
 Route::post('/update-invoice', [App\Http\Controllers\ProductSalesController::class, 'updateInvoice'])->name('update-invoice')->middleware('role:Finance,Admin,Super,Staff');
 
+Route::get('/return-item/{itemid}', [App\Http\Controllers\ProductSalesController::class, 'returnItem'])->name('return-item')->middleware('role:Super');
+Route::post('/saveReturned', [App\Http\Controllers\ProductSalesController::class, 'saveReturned'])->name('saveReturned')->middleware('role:Super');
+
 Route::get('/invoice/{category}/{tid}', [App\Http\Controllers\ProductSalesController::class, 'invoice'])->name('invoice')->middleware('role:Finance,Admin,Super,Staff');
 // Route::get('/pinvoice/{category}/{tid}', [App\Http\Controllers\ProductSalesController::class, 'invoice'])->name('invoice')->middleware('role:Finance,Admin,Super,Staff');
 Route::get('/send-document/{category}/{tid}', [App\Http\Controllers\ProductSalesController::class, 'sendDocument'])->name('send-document')->middleware('role:Finance,Admin,Super,Staff');

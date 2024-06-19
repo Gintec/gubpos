@@ -11,10 +11,6 @@ class transactions extends Model
 
     protected $guarded = [];
 
-    public function productionjobs()
-    {
-        return $this->belongsTo(productionjobs::class, 'id', 'production_id');
-    }
 
     public function accounthead()
     {
@@ -29,5 +25,10 @@ class transactions extends Model
     public function customer()
     {
         return $this->hasOne(User::class, 'id', 'from');
+    }
+
+    public function productSales()
+    {
+        return $this->hasOne(product_sales::class, 'group_id', 'reference_no');
     }
 }

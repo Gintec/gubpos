@@ -21,12 +21,12 @@ class CreateTransactionsTable extends Migration
             $table->foreign('account_head')->references('id')->on('accountheads')->onDelete('cascade');
 
             $table->dateTime('dated')->nullable();
-            $table->string('reference_no',20)->nullable();
+            $table->string('reference_no',30)->index()->nullable();
             $table->string('upload',50)->nullable();
             $table->string('detail',100)->nullable();
             $table->string('from',40)->nullable();
-            $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
             $table->string('to',40)->nullable();
+
             $table->unsignedBigInteger('approved_by')->index()->nullable();
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('recorded_by')->index()->nullable();

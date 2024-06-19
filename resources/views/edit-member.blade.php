@@ -119,6 +119,7 @@
                                                 <option value="Customer">Customer</option>
                                                 <option value="New Customer">New Customer</option>
                                                 <option value="Lost Customer">Lost Customer</option>
+                                                <option value="Contractor">Contractor</option>
                                             </select>
                                         </div>
 
@@ -166,6 +167,7 @@
                                                 <option value="Admin">Admin</option>
                                                 <option value="Staff">Staff</option>
                                                 <option value="Finance">Finance</option>
+                                                <option value="Delivery">Delivery</option>
                                                 @if ($settings->mode=="Maintenance")
                                                     <option value="Super">Super</option>
                                                 @endif
