@@ -122,8 +122,10 @@
                     <div class="form-group col-md-6">
                         <label for="category">Category</label>
                         <select class="form-control" name="category" id="category">
-                        <option value="Upcoming">Upcoming</option>
-
+                            <option value="GUBABI FIREPROOF SAFE" selected>GUBABI FIREPROOF SAFE</option>
+                            <option value="GUBABI FIREPROOF CABINET">GUBABI FIREPROOF CABINET</option>
+                            <option value="MANUAL COMBINATION">MANUAL COMBINATION</option>
+                            <option value="Upcoming">Upcoming</option>
                         </select>
                     </div>
 
@@ -157,7 +159,6 @@
                         {{ __('Add Product') }}
                     </button>
                 </div>
-
 
             </form>
         </div>

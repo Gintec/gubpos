@@ -758,6 +758,8 @@
 
         function product(accid){
 
+        
+
             var name = $('#ach'+accid).attr("data-name");
             var type = $('#ach'+accid).attr("data-type");
             var measurement_unit = $('#ach'+accid).attr("data-measurement_unit");
@@ -768,17 +770,17 @@
             var setting_id = $('#ach'+accid).attr("data-setting_id");
             var category = $('#ach'+accid).attr("data-category");
 
+           
+
             $('#id').val(accid);
             $('#name').val(name);
             $('#type').val(type).attr("selected", "selected");
             $('#measurement_unit').val(measurement_unit);
             $('#size').val(size);
-
-
             $('#price').val(price);
             $('#oldpicture').val(picture);
-            $('#category').val(category).attr("selected", "selected");
-            $('#setting_id').val(setting_id).attr("selected", "selected");
+            $('#category option[value='+category+']').val(category).attr("selected", "selected").change();
+            $('#setting_id option[value='+setting_id+']').val(setting_id).attr("selected", "selected").change();
             $('#prdbutton').html("Update Product");
 
         }
